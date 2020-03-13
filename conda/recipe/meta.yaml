@@ -1,0 +1,40 @@
+package:
+  name: jubeo
+  version: 0.0.0a0.dev0
+
+source:
+  fn: jubeo-0.0.0a0.dev0.tar.gz
+  url: https://github.com/salotz/jubeo/releases/download//{{ version }}/{{ name }}-{{ version }}.tar.gz
+  # TODO: way to specify a hole or 
+  sha256:
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+  entry_points:
+    - jubeo = jubeo.cli:cli
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - wheel
+
+  host:
+    - python
+    
+  run:
+    - python
+    
+
+about:
+  home: https://github.com/salotz/jubeo
+  license: MIT
+  license_file: LICENSE
+  summary: "Small tool for deploying and updating development task tooling and automation. "
+  doc_url: https://salotz.github.io/jubeo
+  dev_url: https://github.com/salotz/jubeo
+
+extra:
+  recipe-maintainers:
+    - salotz
