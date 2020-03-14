@@ -1,4 +1,7 @@
-* jubeo
+* jubeo: Meta-project Protocol
+
+Tool and protocol for updating project meta-tooling: meta-project
+protocol (MPP).
 
 
 ** Docs and Info

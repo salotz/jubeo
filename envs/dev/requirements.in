@@ -48,3 +48,6 @@ pytest-profiling
 
 # package
 gitpython
+click
+hyperlink
+toml

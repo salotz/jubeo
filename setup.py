@@ -19,6 +19,9 @@ import itertools as it
 # the basic needed requirements for a package
 base_requirements = [
     'gitpython',
+    'click',
+    'hyperlink',
+    'toml',
 ]
 
 # extras requirements list

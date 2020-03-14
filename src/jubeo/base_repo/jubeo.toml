@@ -1,0 +1,12 @@
+
+# 1. for git repos use the 'git+https'
+# 2. for local files leave scheme bare or use 'file' scheme
+
+# if the files in the repo are not at the top-level use the 'fragment'
+# section (after the #) for the path within the repo
+upstream_url = "git+https://github.com/salotz/jubeo.git#src/jubeo/base_taskset"
+
+[taskset]
+
+dirname = "tasks"
+

@@ -1,0 +1,4 @@
+
+[cache]
+
+path = "$XDG_CACHE_HOME/jubeo"

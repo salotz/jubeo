@@ -6,5 +6,3 @@ afraid of being overwritten and removed automatically."""
 # this will only update in place, there is no template expansion that
 # is run.
 
-
-
