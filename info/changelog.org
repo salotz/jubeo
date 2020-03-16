@@ -7,23 +7,26 @@ Adheres to [[https://github.com/salotz/rfcs/blob/master/rfcs/salotz.002_semantic
 
 See the git commit log history for full details.
 
-** Unreleased
+** [0.0.1a0.dev0] - 2020-03-16
 
-*** Breakages
-
-*** Regressions
+First working version.
 
 *** Growth
 
+- first working prototype
+- ~jubeo~ tool configuration file, ~$HOME/.config/jubeo/jubeo_conf.toml~
+- ~.jubeo~ project-local configuration files and tool requirements in
+- base jubeo repo inside the main source tree made possible by
+  relative paths within git repos in the URL fragment
+- Commands:
+  - ~init-config~ :: initialize the configuration and cache of jubeo
+  - ~init~ :: initialize a project with a jubeo metaproject tooling
+  - ~update~ :: update the metaproject tooling for a project
+
+- caching is very stupid and not actually cached. Retrieves from git
+  repo every time if not local.
 
 ** [0.0.0a0.dev0] - 2020-03-12
 
-*** Breakages
-
-*** Regressions
-
-*** Growth
-
-
-
+Prehistory
 

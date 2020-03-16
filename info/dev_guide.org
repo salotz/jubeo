@@ -254,7 +254,6 @@ The target locations for changing versions are in the following files:
 # confirmation of correctness
 
 **** Making the release official
-
 To make a release do some changes and make sure they are fully tested
 and functional and commit them in version control. At this point you
 will also want to do any rebasing or cleaning up the actual commits if
@@ -326,7 +325,7 @@ You can test that it works from the index using the same
 And install the package from the test repo with no dependencies:
 
 #+begin_src bash
-pip install --index-url https://test.pypi.org/simple/ --no-deps jubeo-salotz
+pip install --index-url https://test.pypi.org/simple/ --no-deps jubeo
 #+end_src
 
 # QUEST: should this message be the release message we want for the VCS
