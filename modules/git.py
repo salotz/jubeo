@@ -6,10 +6,6 @@ from ..config import (
     VERSION,
 )
 
-
-
-
-
 ## Constants
 
 VCS_RELEASE_TAG_TEMPLATE = "v{}"

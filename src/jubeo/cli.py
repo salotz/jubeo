@@ -111,7 +111,6 @@ def init(force, taskset_name, upstream, project_dir):
     else:
         upstream_url = URL.from_text(upstream)
 
-    import pdb; pdb.set_trace()
     # then we can simply copy from this downloaded repo
     source_repo_path = Path(retrieve_upstream(upstream_url, cache_path))
 

@@ -1,6 +1,7 @@
 from invoke import task
 
 from ..config import (
+    VERSION,
     BENCHMARK_STORAGE_URL,
     ORG_DOCS_SOURCES,
     RST_DOCS_SOURCES,
@@ -39,6 +40,15 @@ PYPI_INDEX_URL = "https://upload.pypi.org/legacy/"
 
 BENCHMARK_STORAGE_URI="\"file://{}\"".format(BENCHMARK_STORAGE_URL)
 
+
+def project_slug(cx):
+
+    try:
+        from ..config import PROJECT_SLUG
+    except ImportError:
+        print("You must set the 'PROJECT_SLUG' in conifig.py to use this")
+    else:
+        return dirname
 
 @task
 def clean_dist(cx):
@@ -149,7 +159,7 @@ def docs_build(cx):
     with cx.cd('sphinx'):
 
         # build the API Documentation
-        cx.run("sphinx-apidoc -f --separate --private --ext-autodoc --module-first --maxdepth 1 -o api ../src/{{cookiecutter.project_slug}}")
+        cx.run("sphinx-apidoc -f --separate --private --ext-autodoc --module-first --maxdepth 1 -o api ../src/PROJECT_SLUG")
 
         # then do the sphinx build process
         cx.run("sphinx-build -b html -E -a -j 6 . ./_build/html/")
@@ -193,12 +203,12 @@ def tests_benchmarks(cx):
     cx.run("(cd tests/tests/test_benchmarks && pytest -m 'not interactive')")
 
 @task
-def tests_integration(cx, node=DEFAULT_ENV):
-    cx.run(f"(cd tests/tests/test_integration && pytest -m 'not interactive' -m 'node_{node}')")
+def tests_integration(cx):
+    cx.run(f"(cd tests/tests/test_integration && pytest -m 'not interactive')")
 
 @task
-def tests_unit(cx, node=DEFAULT_ENV):
-    cx.run(f"(cd tests/tests/test_unit && pytest -m 'not interactive' -m 'node_{node}')")
+def tests_unit(cx):
+    cx.run(f"(cd tests/tests/test_unit && pytest -m 'not interactive')")
 
 @task
 def tests_interactive(cx):
@@ -207,7 +217,7 @@ def tests_interactive(cx):
     cx.run("pytest -m 'interactive'")
 
 @task()
-def tests_all(cx, node=DEFAULT_ENV):
+def tests_all(cx):
     """Run all the automated tests. No benchmarks.
 
     There are different kinds of nodes that we can run on that
@@ -223,8 +233,8 @@ def tests_all(cx, node=DEFAULT_ENV):
     """
 
 
-    tests_unit(cx, node=node)
-    tests_integration(cx, node=node)
+    tests_unit(cx)
+    tests_integration(cx)
 
 @task
 def tests_tox(cx):
@@ -244,7 +254,7 @@ def lint(cx):
     cx.run("mkdir -p metrics/lint")
 
     cx.run("rm -f metrics/lint/flake8.txt")
-    cx.run("flake8 --output-file=metrics/lint/flake8.txt src/{{ cookiecutter.project_slug }}")
+    cx.run("flake8 --output-file=metrics/lint/flake8.txt src/PROJECT_SLUG")
 
 @task
 def complexity(cx):
@@ -252,13 +262,13 @@ def complexity(cx):
 
     cx.run("mkdir -p metrics/code_quality")
 
-    cx.run("lizard -o metrics/code_quality/lizard.csv src/{{ cookiecutter.project_slug }}")
-    cx.run("lizard -o metrics/code_quality/lizard.html src/{{ cookiecutter.project_slug }}")
+    cx.run("lizard -o metrics/code_quality/lizard.csv src/PROJECT_SLUG")
+    cx.run("lizard -o metrics/code_quality/lizard.html src/PROJECT_SLUG")
 
     # SNIPPET: annoyingly opens the browser
 
     # make a cute word cloud of the things used
-    # cx.run("(cd metrics/code_quality; lizard -EWordCount src/{{ cookiecutter.project_slug }} > /dev/null)")
+    # cx.run("(cd metrics/code_quality; lizard -EWordCount src/PROJECT_SLUG > /dev/null)")
 
 @task(pre=[complexity, lint])
 def quality(cx):
@@ -312,25 +322,18 @@ def version_which(cx):
     """Tell me what version the project is at."""
 
     # get the current version
-    from {{ cookiecutter.project_slug }} import __version__ as proj_version
-    print(proj_version)
-
-
-
+    cx.run("python -m {PROJECT_SLUG}._print_version")
 
 @task
 def release(cx):
 
-    # get the release version from the module
-    from {{cookiecutter.project_slug}} import __version__ as proj_version
-
     # SNIPPET
     # cx.run("python -m wumpus.version")
 
-    print("Releasing: ", proj_version)
+    print("Releasing: ", VERSION)
 
     # TODO import from git module
-    release_tag(cx, release=proj_version)
+    release_tag(cx, release=VERSION)
 
     # IDEA, TODO: handle the manual checklist of things
 
@@ -395,20 +398,10 @@ def publish_test_pypi(cx, version=None):
            f"--repository-url {TESTING_INDEX_URL} "
            "dist/*")
 
-    # TODO: make it so that you don't have to throw out old dists and
-    # just submit the ones we need for this version
-
-    # cx.run("twine upload "
-    #        f"--repository-url {TESTING_INDEX_URL} "
-    #        "dist/{{cookiecutter.project_name}}-{version}*")
-
-
 @task(pre=[clean_dist, update_tools, build_sdist])
 def publish_test(cx):
 
-    from {{cookiecutter.project_slug}} import __version__ as version
-
-    publish_test_pypi(cx, version=version)
+    publish_test_pypi(cx, version=VERSION)
 
 # PyPI
 
@@ -432,10 +425,6 @@ def publish_pypi(cx, version=None):
 @task(pre=[clean_dist, update_tools, build])
 def publish(cx, version=None):
 
-    # assume the latest
-    if version is None:
-        from {{cookiecutter.project_slug}} import __version__ as version
-
     # TODO: import the git module
-    publish_tags(cx, version=version)
-    publish_pypi(cx, version=version)
+    publish_tags(cx, version=VERSION)
+    publish_pypi(cx, version=VERSION)
