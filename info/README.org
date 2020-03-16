@@ -1,5 +1,6 @@
 
 * jubeo
+
 ** Getting Started
 
 - [[file:./quick_start.org][Quick Start]] :: Get up and running as quickly as possible.

@@ -1,4 +1,41 @@
 * Quick Start
 
+Install jubeo from the git repo:
 
+#+BEGIN_SRC bash
+pip install git+https://github.com/salotz/jubeo.git
+#+END_SRC
 
+Because jubeo isn't really a library and doesn't have plugins it is
+compatible with installing via ~pipx~ or similar tool:
+
+#+BEGIN_SRC bash
+pipx install git+https://github.com/salotz/jubeo.git
+#+END_SRC
+
+You should be able to run the help message from the command line tool:
+
+#+BEGIN_SRC bash
+jubeo --help
+#+END_SRC
+
+Then you can either manually create the config folder and file (at
+~$XDG_CONFIG_HOME/jubeo~) for the command line tool or use the init
+config CLI target:
+
+#+BEGIN_SRC bash
+jubeo init-config
+#+END_SRC
+
+Then choose some project you want to install ~jubeo~ metaproject
+tooling to e.g. ~$HOME/scratch/test_proj~:
+
+#+BEGIN_SRC bash
+mkdir -p $HOME/scratch/test_proj
+jubeo init --force $HOME/scratch/test_proj
+cd $HOME/scratch/test_proj
+pip install -r .jubeo/requirements.txt
+inv -l
+inv custom.hello
+jubeo update .
+#+END_SRC

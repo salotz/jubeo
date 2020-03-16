@@ -12,11 +12,12 @@ from .main import (
     base_repo_path,
     config_template_path,
     retrieve_upstream,
+    init_project,
     load_proj_config,
     update_project,
 )
 
-CONFIG_DIR = "$XDG_CONFIG_HOME/.jubeo"
+CONFIG_DIR = "$XDG_CONFIG_HOME/jubeo"
 """The system-wide configuration directory, including configuring the
 jubeo tool itself"""
 
@@ -30,10 +31,10 @@ def load_config():
 
     return config
 
-def init_cache():
+def _init_cache():
 
     config = load_config()
-    os.makedirs(config['cache']['path'],
+    os.makedirs(osp.expandvars(osp.expanduser(config['cache']['path'])),
                 exist_ok=True)
 
 @click.command()
@@ -56,19 +57,29 @@ def init_config(force):
         ignore=shutil.ignore_patterns("*~", "__init__.py"),
     )
 
+    _init_cache()
 
-@click.command()
-def clean_cache():
+
+
+def _clean_cache():
     """Remove cached files."""
 
     config = load_config()
 
-    shutile.rmtree(config['cache']['path'])
+    try:
+        shutil.rmtree(osp.expanduser(osp.expandvars(config['cache']['path'])))
+    except FileNotFoundError:
+        _init_cache()
+    else:
+        _init_cache()
 
-    init_cache()
 
 
-# TODO: unify jubeo-base repo with the one in here
+@click.command()
+def clean_cache():
+    _clean_cache()
+
+
 @click.command()
 @click.option("--force/--no-force", default=False)
 @click.option("--taskset-name", default="tasks")
@@ -77,11 +88,13 @@ def clean_cache():
 def init(force, taskset_name, upstream, project_dir):
     """Initialize a project task-set."""
 
+    _clean_cache()
+
     project_dir = Path(project_dir)
 
     config = load_config()
 
-    cache_path = Path(config['cache']['path'])
+    cache_path = Path(osp.expanduser(osp.expandvars(config['cache']['path'])))
 
     # get the upstream repo we are retrieving from, downloading if
     # necessary
@@ -90,43 +103,25 @@ def init(force, taskset_name, upstream, project_dir):
     else:
         upstream_url = URL.from_text(upstream)
 
+    # then we can simply copy from this downloaded repo
     source_repo_path = Path(retrieve_upstream(upstream_url, cache_path))
 
-    init_repo(source, target, config)
-    ## taskset
-    taskset_target = project_dir / taskset_name
-    taskset_source = source_repo_path / TASKSET_NAME
-
-    if osp.exists(taskset_target) and force:
-        shutil.rmtree(taskset_target)
-
-    shutil.copytree(
-        taskset_source,
-        taskset_target,
-        dirs_exist_ok=force,
-        ignore=shutil.ignore_patterns("*~"),
+    init_project(
+        source_repo_path,
+        project_dir,
+        force=force,
     )
 
-
-    ## config file installation
-    proj_config_source = Path(source_repo_path) / JUBEO_PROJ_CONF
-    proj_conf_target = project_dir / JUBEO_PROJ_CONF
-
-    if osp.exists(proj_conf_target):
-
-        if not force:
-            raise OSError("Configuration file exists, not overwriting")
-
-    shutil.copyfile(
-        proj_config_source,
-        proj_conf_target
-    )
 
 
 @click.command()
 @click.argument('project-dir', type=click.Path(exists=True))
 def update(project_dir):
     """Update a projects task-set."""
+
+    # we don't do a fancy caching strategy and redownload every time
+    # now, so we clean everytime now
+    _clean_cache()
 
     project_dir = Path(project_dir)
 
@@ -137,8 +132,7 @@ def update(project_dir):
     # load the project config
     proj_config = load_proj_config(project_dir)
 
-    # TODO: do I need that stem
-    cache_path = Path(config['cache']['path']) # / project_dir.stem
+    cache_path = Path(osp.expanduser(osp.expandvars(config['cache']['path'])))
 
     # get the upstream URL
     url_str = osp.expandvars(proj_config['upstream_url'])
@@ -149,9 +143,12 @@ def update(project_dir):
     source_repo_path = retrieve_upstream(url, cache_path)
 
     ## update the project
-    update_project(source_repo_path,
-                   project_dir,
-                   proj_config)
+    update_project(
+        source_repo_path,
+        project_dir,
+        proj_config,
+        force=True,
+    )
 
 
 @click.group()
