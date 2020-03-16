@@ -1,0 +1,101 @@
+User's Guide
+============
+
+Initializing tooling to an existing project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To initialize ``jubeo`` metaproject toolign to an existing project
+simply run this command:
+
+.. code:: bash
+
+   PROJECT="$HOME/scratch/test_proj"
+   mkdir -p $PROJECT
+
+   jubeo init $PROJECT
+
+This will use the bare-bones default tooling in the ``jubeo`` source
+tree, but if you want to initialize from a specific upstream repo you
+can do that as well:
+
+.. code:: bash
+
+   jubeo init --upstream https://github.com/salotz/jubeo-pyproject.git $PROJECT
+
+Now you should see a ``.jubeo`` project specific configuration directory
+as well as a directory called ``tasks``. The ``tasks`` directory is
+named as such because the default metaproject tooling uses the python
+library ``invoke`` to generate project specific routines. All the
+dependencies for the specific ``jubeo`` upstream should be given in the
+``.jubeo`` folder as the ``requirements.in`` (abstract non-pinned; YMMV)
+and ``requirements.txt`` (pinned versions more likely to work). If you
+don't already have them installed go ahead and run:
+
+.. code:: bash
+
+   pip install -r requirements.txt
+
+In whichever environment you see fit. Depending on the ``jubeo`` taskset
+there will be tools for managing project specific virtual environments
+but this necessary "bootstrapping" step is currently necessary.
+
+You should have installed at least one dummy target to show how to
+execute targets via the default ``invoke`` configuration:
+
+.. code:: bash
+
+   cd $HOME/scratch/test_proj
+   inv custom.hello
+
+You can see all the available targets with ``inv -l``.
+
+The targets come in modules which are separated by '.' just like in
+python.
+
+Updating Your Tooling
+~~~~~~~~~~~~~~~~~~~~~
+
+The default tooling is intentionally bare-bones because ``jubeo`` is
+agnostic to the type of project. Your can update metaproject tooling by
+running:
+
+.. code:: bash
+
+   jubeo update $HOME/scratch/test_proj
+
+This will read the ``.jubeo/jubeo.toml`` configuration file and and grab
+the latest tasksets from the ``upstream_url`` which can either be on the
+file system or a git repo. You can switch **upstream** sources whenever
+by customizing this path.
+
+You can work with just the targets the upstream taskset gives you or you
+can add your own project-local targets in the ``$PROJECT/tasks/plugins``
+folder. To start there is an example of how to add a module called
+``custom.py`` where the ``custom.hello`` target came from.
+
+This plugins directory (and the ``tasks/config.py`` file) will never be
+altered when ``jubeo`` updates, whereas all of the other files are free
+game to be completely altered. So if you want to keep a project specific
+target put it in the plugins!
+
+Initializing a jubeo project from scratch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Due to the nature of the platform ``jubeo`` was designed for (i.e.
+unix-like systems) most behavior is dependent upon a very particular
+file-hierarchy structure. One of the major motivations for building
+``jubeo`` was in part to add a layer of indirection between the project
+developer/maintainer and all of these finicky and banal details and
+focus more on policy and strategy by providing semantic targets to
+execute that "Just Work" 80% of the time.
+
+Because of this adopting any new project tooling can be a bit onerous as
+you may need to change the project structure around significantly which
+can break a lot of things in mysterious and difficult to fix ways.
+
+For new projects however this isn't as much of a concern and the major
+problem is instead manually creating the file-hierarchy structure by
+hand. Luckily tools for making this easier exist such as the
+`cookiecutter <https://github.com/cookiecutter>`__ which we highly
+suggest using and all of our ``jubeo`` based projects likely come with
+``cookiecutter`` templates.

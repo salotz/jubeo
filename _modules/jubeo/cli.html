@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>jubeo.cli &#8212; jubeo 0.0.1a0.dev0 documentation</title>
+    <link rel="stylesheet" href="../../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">jubeo 0.0.1a0.dev0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../../index.html">Docs</a></li>
+              
+                <li><a href="../index.html">Module code</a></li>
+              
+              <li>jubeo.cli</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <h1>Source code for jubeo.cli</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="kn">from</span> <span class="nn">hyperlink</span> <span class="kn">import</span> <span class="n">URL</span>
+<span class="kn">import</span> <span class="nn">toml</span>
+
+<span class="kn">from</span> <span class="nn">.main</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">base_repo_path</span><span class="p">,</span>
+    <span class="n">config_template_path</span><span class="p">,</span>
+    <span class="n">retrieve_upstream</span><span class="p">,</span>
+    <span class="n">init_project</span><span class="p">,</span>
+    <span class="n">load_proj_config</span><span class="p">,</span>
+    <span class="n">update_project</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">CONFIG_DIR</span> <span class="o">=</span> <span class="s2">&quot;$XDG_CONFIG_HOME/jubeo&quot;</span>
+<span class="sd">&quot;&quot;&quot;The system-wide configuration directory, including configuring the</span>
+<span class="sd">jubeo tool itself&quot;&quot;&quot;</span>
+
+<span class="n">JUBEO_CONF_NAME</span> <span class="o">=</span> <span class="s2">&quot;jubeo_conf.toml&quot;</span>
+<span class="sd">&quot;&quot;&quot;Configures the behavior of the jubeo tool.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../../api/jubeo.cli.html#jubeo.cli.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">():</span>
+
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">CONFIG_DIR</span><span class="p">))</span> <span class="o">/</span> <span class="n">JUBEO_CONF_NAME</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="_init_cache"><a class="viewcode-back" href="../../api/jubeo.cli.html#jubeo.cli._init_cache">[docs]</a><span class="k">def</span> <span class="nf">_init_cache</span><span class="p">():</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">])),</span>
+                <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--force/--no-force&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">init_config</span><span class="p">(</span><span class="n">force</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize the system-wide configuration directory.&quot;&quot;&quot;</span>
+
+    <span class="n">config_dir_path</span> <span class="o">=</span> <span class="n">config_template_path</span><span class="p">()</span>
+
+    <span class="n">conf_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">CONFIG_DIR</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">conf_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">conf_dir</span><span class="p">)</span>
+
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span>
+        <span class="n">config_dir_path</span><span class="p">,</span>
+        <span class="n">conf_dir</span><span class="p">,</span>
+        <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+        <span class="c1"># ignore the mod def which is needed for pkgutils</span>
+        <span class="n">ignore</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">ignore_patterns</span><span class="p">(</span><span class="s2">&quot;*~&quot;</span><span class="p">,</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">_init_cache</span><span class="p">()</span>
+
+
+
+<div class="viewcode-block" id="_clean_cache"><a class="viewcode-back" href="../../api/jubeo.cli.html#jubeo.cli._clean_cache">[docs]</a><span class="k">def</span> <span class="nf">_clean_cache</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Remove cached files.&quot;&quot;&quot;</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">])))</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">_init_cache</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_init_cache</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">clean_cache</span><span class="p">():</span>
+    <span class="n">_clean_cache</span><span class="p">()</span>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--force/--no-force&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--taskset-name&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;tasks&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--upstream&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;project-dir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">taskset_name</span><span class="p">,</span> <span class="n">upstream</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialize a project task-set.&quot;&quot;&quot;</span>
+
+    <span class="n">_clean_cache</span><span class="p">()</span>
+
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">])))</span>
+
+    <span class="c1"># get the upstream repo we are retrieving from, downloading if</span>
+    <span class="c1"># necessary</span>
+    <span class="k">if</span> <span class="n">upstream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">upstream_url</span> <span class="o">=</span> <span class="n">URL</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_repo_path</span><span class="p">()))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">upstream_url</span> <span class="o">=</span> <span class="n">URL</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">upstream</span><span class="p">)</span>
+
+    <span class="c1"># then we can simply copy from this downloaded repo</span>
+    <span class="n">source_repo_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">retrieve_upstream</span><span class="p">(</span><span class="n">upstream_url</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">))</span>
+
+    <span class="n">init_project</span><span class="p">(</span>
+        <span class="n">source_repo_path</span><span class="p">,</span>
+        <span class="n">project_dir</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;project-dir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">project_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update a projects task-set.&quot;&quot;&quot;</span>
+
+    <span class="c1"># we don&#39;t do a fancy caching strategy and redownload every time</span>
+    <span class="c1"># now, so we clean everytime now</span>
+    <span class="n">_clean_cache</span><span class="p">()</span>
+
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+
+    <span class="c1"># read the system-wide configuration file to find location of the</span>
+    <span class="c1"># cache directory</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+
+    <span class="c1"># load the project config</span>
+    <span class="n">proj_config</span> <span class="o">=</span> <span class="n">load_proj_config</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+
+    <span class="n">cache_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">])))</span>
+
+    <span class="c1"># get the upstream URL</span>
+    <span class="n">url_str</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">proj_config</span><span class="p">[</span><span class="s1">&#39;upstream_url&#39;</span><span class="p">])</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">URL</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">url_str</span><span class="p">)</span>
+
+    <span class="c1"># retrieve the upstream repo and return the exact file location of</span>
+    <span class="c1"># the jubeo bundle</span>
+    <span class="n">source_repo_path</span> <span class="o">=</span> <span class="n">retrieve_upstream</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+
+    <span class="c1">## update the project</span>
+    <span class="n">update_project</span><span class="p">(</span>
+        <span class="n">source_repo_path</span><span class="p">,</span>
+        <span class="n">project_dir</span><span class="p">,</span>
+        <span class="n">proj_config</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+<span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+<span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">clean_cache</span><span class="p">)</span>
+<span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">init_config</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">cli</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+            
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">jubeo 0.0.1a0.dev0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2020, Samuel D. Lotz. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

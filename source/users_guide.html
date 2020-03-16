@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>User’s Guide &#8212; jubeo 0.0.1a0.dev0 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorials" href="tutorials/index.html" />
+    <link rel="prev" title="Quick Start" href="quick_start.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorials/index.html" title="Tutorials"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quick_start.html" title="Quick Start"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">jubeo 0.0.1a0.dev0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Contents</h2>
+    <div class="sidebar-localtoc">
+      <ul>
+<li><a class="reference internal" href="#">User’s Guide</a><ul>
+<li><a class="reference internal" href="#initializing-tooling-to-an-existing-project">Initializing tooling to an existing project</a></li>
+<li><a class="reference internal" href="#updating-your-tooling">Updating Your Tooling</a></li>
+<li><a class="reference internal" href="#initializing-a-jubeo-project-from-scratch">Initializing a jubeo project from scratch</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quick_start.html"
+                        title="previous chapter">Quick Start</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorials/index.html"
+                        title="next chapter">Tutorials</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/users_guide.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+              <li>User’s Guide</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="user-s-guide">
+<h1>User’s Guide<a class="headerlink" href="#user-s-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="initializing-tooling-to-an-existing-project">
+<h2>Initializing tooling to an existing project<a class="headerlink" href="#initializing-tooling-to-an-existing-project" title="Permalink to this headline">¶</a></h2>
+<p>To initialize <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> metaproject toolign to an existing project
+simply run this command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PROJECT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/scratch/test_proj&quot;</span>
+mkdir -p <span class="nv">$PROJECT</span>
+
+jubeo init <span class="nv">$PROJECT</span>
+</pre></div>
+</div>
+<p>This will use the bare-bones default tooling in the <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> source
+tree, but if you want to initialize from a specific upstream repo you
+can do that as well:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jubeo init --upstream https://github.com/salotz/jubeo-pyproject.git <span class="nv">$PROJECT</span>
+</pre></div>
+</div>
+<p>Now you should see a <code class="docutils literal notranslate"><span class="pre">.jubeo</span></code> project specific configuration directory
+as well as a directory called <code class="docutils literal notranslate"><span class="pre">tasks</span></code>. The <code class="docutils literal notranslate"><span class="pre">tasks</span></code> directory is
+named as such because the default metaproject tooling uses the python
+library <code class="docutils literal notranslate"><span class="pre">invoke</span></code> to generate project specific routines. All the
+dependencies for the specific <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> upstream should be given in the
+<code class="docutils literal notranslate"><span class="pre">.jubeo</span></code> folder as the <code class="docutils literal notranslate"><span class="pre">requirements.in</span></code> (abstract non-pinned; YMMV)
+and <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> (pinned versions more likely to work). If you
+don’t already have them installed go ahead and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r requirements.txt
+</pre></div>
+</div>
+<p>In whichever environment you see fit. Depending on the <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> taskset
+there will be tools for managing project specific virtual environments
+but this necessary “bootstrapping” step is currently necessary.</p>
+<p>You should have installed at least one dummy target to show how to
+execute targets via the default <code class="docutils literal notranslate"><span class="pre">invoke</span></code> configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/scratch/test_proj
+inv custom.hello
+</pre></div>
+</div>
+<p>You can see all the available targets with <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">-l</span></code>.</p>
+<p>The targets come in modules which are separated by ‘.’ just like in
+python.</p>
+</div>
+<div class="section" id="updating-your-tooling">
+<h2>Updating Your Tooling<a class="headerlink" href="#updating-your-tooling" title="Permalink to this headline">¶</a></h2>
+<p>The default tooling is intentionally bare-bones because <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> is
+agnostic to the type of project. Your can update metaproject tooling by
+running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jubeo update <span class="nv">$HOME</span>/scratch/test_proj
+</pre></div>
+</div>
+<p>This will read the <code class="docutils literal notranslate"><span class="pre">.jubeo/jubeo.toml</span></code> configuration file and and grab
+the latest tasksets from the <code class="docutils literal notranslate"><span class="pre">upstream_url</span></code> which can either be on the
+file system or a git repo. You can switch <strong>upstream</strong> sources whenever
+by customizing this path.</p>
+<p>You can work with just the targets the upstream taskset gives you or you
+can add your own project-local targets in the <code class="docutils literal notranslate"><span class="pre">$PROJECT/tasks/plugins</span></code>
+folder. To start there is an example of how to add a module called
+<code class="docutils literal notranslate"><span class="pre">custom.py</span></code> where the <code class="docutils literal notranslate"><span class="pre">custom.hello</span></code> target came from.</p>
+<p>This plugins directory (and the <code class="docutils literal notranslate"><span class="pre">tasks/config.py</span></code> file) will never be
+altered when <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> updates, whereas all of the other files are free
+game to be completely altered. So if you want to keep a project specific
+target put it in the plugins!</p>
+</div>
+<div class="section" id="initializing-a-jubeo-project-from-scratch">
+<h2>Initializing a jubeo project from scratch<a class="headerlink" href="#initializing-a-jubeo-project-from-scratch" title="Permalink to this headline">¶</a></h2>
+<p>Due to the nature of the platform <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> was designed for (i.e.
+unix-like systems) most behavior is dependent upon a very particular
+file-hierarchy structure. One of the major motivations for building
+<code class="docutils literal notranslate"><span class="pre">jubeo</span></code> was in part to add a layer of indirection between the project
+developer/maintainer and all of these finicky and banal details and
+focus more on policy and strategy by providing semantic targets to
+execute that “Just Work” 80% of the time.</p>
+<p>Because of this adopting any new project tooling can be a bit onerous as
+you may need to change the project structure around significantly which
+can break a lot of things in mysterious and difficult to fix ways.</p>
+<p>For new projects however this isn’t as much of a concern and the major
+problem is instead manually creating the file-hierarchy structure by
+hand. Luckily tools for making this easier exist such as the
+<a class="reference external" href="https://github.com/cookiecutter">cookiecutter</a> which we highly
+suggest using and all of our <code class="docutils literal notranslate"><span class="pre">jubeo</span></code> based projects likely come with
+<code class="docutils literal notranslate"><span class="pre">cookiecutter</span></code> templates.</p>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="quick_start.html" title="previous chapter (use the left arrow)">Quick Start</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="tutorials/index.html" title="next chapter (use the right arrow)">Tutorials</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorials/index.html" title="Tutorials"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quick_start.html" title="Quick Start"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">jubeo 0.0.1a0.dev0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2020, Samuel D. Lotz. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>
