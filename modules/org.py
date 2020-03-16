@@ -1,6 +1,9 @@
 from invoke import task
 
-from ..config import *
+from ..config import (
+    PROJECT_DIR,
+    TANGLE_DIRS,
+)
 
 @task(default=True)
 def tangle(cx):

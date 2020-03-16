@@ -5,9 +5,24 @@ import os
 import os.path as osp
 from pathlib import Path
 
-## user config
-ENV_METHOD = 'venv'
-DEFAULT_ENV = 'dev'
+from ..config import (
+    ENV_METHOD,
+    DEFAULT_ENV,
+    ENVS_DIR,
+)
+
+## user config examples
+
+# SNIPPET:
+
+# # which virtual environment tool to use: venv or conda
+# ENV_METHOD = 'venv'
+
+# # which env spec to use by default
+# DEFAULT_ENV = 'dev'
+
+# # directory where env specs are read from
+# ENVS_DIR = 'envs'
 
 ## Constants
 
@@ -15,13 +30,15 @@ DEFAULT_ENV = 'dev'
 VENV_DIR = "_venv"
 CONDA_ENVS_DIR = "_conda_envs"
 
-# directory where env specs are read from
-ENVS_DIR = 'envs'
-
 # specified names of env specs files
 SELF_REQUIREMENTS = 'self.requirements.txt'
+"""How to install the work piece"""
+
 PYTHON_VERSION_FILE = 'pyversion.txt'
+"""Specify which version of python to use for the env"""
+
 DEV_REQUIREMENTS_LIST = 'dev.requirements.list'
+"""Multi-development mode repos to read dependencies from."""
 
 ### Util
 

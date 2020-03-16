@@ -34,7 +34,15 @@ def load_config():
 def _init_cache():
 
     config = load_config()
-    os.makedirs(osp.expandvars(osp.expanduser(config['cache']['path'])),
+    cache_path = Path(osp.expandvars(osp.expanduser(config['cache']['path'])))
+
+    os.makedirs(cache_path,
+                exist_ok=True)
+
+    # make the sub directories needed
+    os.makedirs(cache_path / 'specs',
+                exist_ok=True)
+    os.makedirs(cache_path / 'modules',
                 exist_ok=True)
 
 @click.command()
@@ -103,6 +111,7 @@ def init(force, taskset_name, upstream, project_dir):
     else:
         upstream_url = URL.from_text(upstream)
 
+    import pdb; pdb.set_trace()
     # then we can simply copy from this downloaded repo
     source_repo_path = Path(retrieve_upstream(upstream_url, cache_path))
 

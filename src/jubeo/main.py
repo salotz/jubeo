@@ -6,7 +6,7 @@ import os
 import os.path as osp
 
 import toml
-import hyperlink
+from hyperlink import URL
 from git import Repo
 
 JUBEO_PROJ_DIR = ".jubeo"
@@ -25,7 +25,7 @@ def config_template_path():
 
     return Path(sys.modules[__name__].__file__).parent / 'config_template'
 
-def retrieve_upstream(url, cache_path):
+def get_repo(url, cache_path):
 
     # if remote download (via git)
     if url.scheme == "git+https":
@@ -57,13 +57,62 @@ def retrieve_upstream(url, cache_path):
         raise NotImplementedError("Please use a local file, or the 'git+https' scheme")
 
     elif url.scheme == '' or url.scheme == 'file':
-        source_repo_path = '/' + '/'.join(url.path)
+
+        origin_repo_path = Path('/' + '/'.join(url.path))
+
+        # get all but the last '.git' at the end
+        repo_name = url.path[-1]
+
+        repo_cache_path = Path(cache_path) / repo_name
+
+        # copy the repo to the cache since we will be manipulating it
+        shutil.copytree(
+            origin_repo_path,
+            repo_cache_path,
+        )
+
+        source_repo_path = repo_cache_path / url.fragment
 
     else:
         raise ValueError(f"URL for upstream jubeo spec invalid: {url.to_text()}")
 
-
     return source_repo_path
+
+def retrieve_upstream(url, cache_path):
+
+    cach_path = Path(cache_path)
+    repo_cache_path = cache_path / "specs"
+
+    # get the spec repo
+    upstream_repo_path = get_repo(url, repo_cache_path)
+
+    ## Retrieve external modules
+
+    # we support retrieving modules from a 3rd party source via URL,
+    # this is specified in the jubeo.toml file
+
+    proj_config_path = upstream_repo_path / JUBEO_PROJ_DIR / JUBEO_PROJ_CONF
+    proj_config = toml.load(proj_config_path)
+
+    mod_source_url = URL.from_text(
+        osp.expandvars(osp.expanduser(proj_config['modules']['source_url'])))
+    modules = proj_config['modules']['modules']
+
+    # then get the modules repo if any where requested
+    if len(modules):
+
+        mod_cache_path = cache_path / "modules"
+        mod_repo_path = get_repo(mod_source_url, mod_cache_path)
+
+        # then copy the modules to the source repo
+        for module in modules:
+            mod_fname = f"{module}.py"
+            shutil.copyfile(
+                mod_repo_path / mod_fname,
+                upstream_repo_path / 'tasks' / 'modules' / mod_fname,
+            )
+
+    return upstream_repo_path
 
 
 def load_proj_config(proj_dir):
@@ -221,7 +270,6 @@ def update_taskset(
         source / "modules",
         target / "modules",
     )
-
 
 def init_project(
         source_repo,

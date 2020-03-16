@@ -1,17 +1,43 @@
 from invoke import task
 
-from ..config import *
+from ..config import (
+    BENCHMARK_STORAGE_URL,
+    ORG_DOCS_SOURCES,
+    RST_DOCS_SOURCES,
+)
 
 import sys
 import os
 import os.path as osp
 from pathlib import Path
 
+## User config examples
 
-BENCHMARK_STORAGE_URL="./metrics/benchmarks"
+# SNIPPET:
+# BENCHMARK_STORAGE_URL="./metrics/benchmarks"
+# ORG_DOCS_SOURCES = [
+#     'changelog',
+#     'dev_guide',
+#     'general_info',
+#     'installation',
+#     'introduction',
+#     'news',
+#     'quick_start',
+#     'troubleshooting',
+#     'users_guide',
+#     'reference',
+# ]
+# RST_DOCS_SOURCES = [
+#     'glossary',
+#     'tutorials/index',
+# ]
+
+## CONSTANTS
+
+TESTING_INDEX_URL = "https://test.pypi.org/legacy/"
+PYPI_INDEX_URL = "https://upload.pypi.org/legacy/"
+
 BENCHMARK_STORAGE_URI="\"file://{}\"".format(BENCHMARK_STORAGE_URL)
-
-VCS_RELEASE_TAG_TEMPLATE = "v{}"
 
 
 @task
@@ -64,23 +90,6 @@ def clean(cx):
 
 
 ### Docs
-ORG_DOCS_SOURCES = [
-    'changelog',
-    'dev_guide',
-    'general_info',
-    'installation',
-    'introduction',
-    'news',
-    'quick_start',
-    'troubleshooting',
-    'users_guide',
-    'reference',
-]
-
-RST_DOCS_SOURCES = [
-    'glossary',
-    'tutorials/index',
-]
 
 @task
 def docs_clean(cx):
@@ -308,15 +317,6 @@ def version_which(cx):
 
 
 
-@task
-def release_tag(cx, release=None):
-
-    assert release is not None, "Release tag string must be given"
-
-    tag_string = VCS_RELEASE_TAG_TEMPLATE.format(release)
-
-    cx.run(f"git tag -a {tag_string} -m 'See the changelog for details'")
-
 
 @task
 def release(cx):
@@ -329,8 +329,8 @@ def release(cx):
 
     print("Releasing: ", proj_version)
 
+    # TODO import from git module
     release_tag(cx, release=proj_version)
-
 
     # IDEA, TODO: handle the manual checklist of things
 
@@ -384,7 +384,7 @@ def build(cx):
 
 # testing publishing
 
-TESTING_INDEX_URL = "https://test.pypi.org/legacy/"
+
 
 @task(pre=[clean_dist, build_sdist])
 def publish_test_pypi(cx, version=None):
@@ -412,7 +412,6 @@ def publish_test(cx):
 
 # PyPI
 
-PYPI_INDEX_URL = "https://upload.pypi.org/legacy/"
 
 @task(pre=[clean_dist, build])
 def publish_pypi(cx, version=None):
@@ -423,14 +422,6 @@ def publish_pypi(cx, version=None):
            f"--repository-url {PYPI_INDEX_URL} "
            f"dist/*")
 
-
-@task
-def publish_tags(cx, version=None):
-    assert version is not None
-
-    tag_string = VCS_RELEASE_TAG_TEMPLATE.format(version)
-
-    cx.run(f"git push origin {tag_string}")
 
 # TODO, SNIPPET, STUB: this is a desired target for uploading dists to github
 # @task
@@ -445,5 +436,6 @@ def publish(cx, version=None):
     if version is None:
         from {{cookiecutter.project_slug}} import __version__ as version
 
+    # TODO: import the git module
     publish_tags(cx, version=version)
     publish_pypi(cx, version=version)

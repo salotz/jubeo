@@ -1,23 +1,24 @@
 from invoke import task
 
-from ..config import *
+from ..config import (
+    OWNER_NAME,
+    OWNER_EMAIL,
+    OWNER_NICKNAME,
+    PROJECT_COPYRIGHT,
+    PROJECT_NAME,
+)
 
 @task
 def owner(cx):
 
-    print(f"Owner: {owner_name}")
-    print(f"Email: {owner_email}")
-    print(f"Nickname: {owner_nickname}")
-
-@task
-def env(cx):
-    print(f"shell profile: {shell_profile}")
-    print(f"refugue domain: {refugue_domain}")
+    print(f"Owner: {OWNER_NAME}")
+    print(f"Email: {OWNER_EMAIL}")
+    print(f"Nickname: {OWNER_NICKNAME}")
 
 @task
 def license(cx):
-    print(f"License: {project_copyright}")
+    print(f"License: {PROJECT_COPYRIGHT}")
 
-@task(post=[owner, license, env])
+@task(post=[owner, license])
 def info(cx):
-    print(f"Project: {project_name}")
+    print(f"Project: {PROJECT_NAME}")

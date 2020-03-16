@@ -1,6 +1,10 @@
 from invoke import task
 
-from ..config import *
+from ..config import (
+    PROJECT_DIRS,
+    RESOURCES,
+    RESOURCE_DIR,
+)
 
 
 @task

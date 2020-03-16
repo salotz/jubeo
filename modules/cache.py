@@ -1,6 +1,8 @@
 from invoke import task
 
-from ..config import *
+from ..config import (
+    PROJECT_DIR,
+)
 
 import joblib
 
