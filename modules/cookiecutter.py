@@ -2,5 +2,5 @@ from invoke import task
 
 @task
 def test(cx):
-    raise NotImplemented
+    raise NotImplementedError
 
