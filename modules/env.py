@@ -150,7 +150,7 @@ def deps_pin(cx, name=DEFAULT_ENV):
 
     deps_pip_pin(cx,
                  name=name,
-                 upgrade=upgrade)
+                 upgrade=False)
 
     deps_conda_pin(cx,
                    name=name,
