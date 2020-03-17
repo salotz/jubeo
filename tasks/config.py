@@ -4,4 +4,4 @@
 # but beware it might break stuff
 from .sysconfig import *
 
-TEST_MESSAGE = "You can configure modules from this file"
+PROJECT_SLUG = "jubeo"
