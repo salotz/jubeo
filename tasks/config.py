@@ -4,7 +4,4 @@
 # but beware it might break stuff
 from .sysconfig import *
 
-## Customize these for all features
-
-# PROJECT_SLUG = ""
-
+TEST_MESSAGE = "You can configure modules from this file"
