@@ -62,19 +62,21 @@ def deps_pip_pin(cx,
     # gather any development repos that are colocated on this machine
     # and solve the dependencies together
 
+    specs = [f"{path}/requirements.in"]
+
     # to get the development repos read the DEV list
-    with open(path / DEV_REQUIREMENTS_LIST) as rf:
-        dev_repo_specs = parse_list_format(rf.read())
+    if osp.exists(path / DEV_REQUIREMENTS_LIST):
+        with open(path / DEV_REQUIREMENTS_LIST) as rf:
+            dev_repo_specs = parse_list_format(rf.read())
 
-    # for each repo spec add this to the list of specs to evaluate for
-    specs = []
-    for dev_repo_spec in dev_repo_specs:
-        assert osp.exists(dev_repo_spec), f"Repo spec {dev_repo_spec} doesn't exist"
+        # for each repo spec add this to the list of specs to evaluate for
+        for dev_repo_spec in dev_repo_specs:
+            assert osp.exists(dev_repo_spec), f"Repo spec {dev_repo_spec} doesn't exist"
 
-        specs.append(dev_repo_spec)
+            specs.append(dev_repo_spec)
 
 
-    spec_str = f"{path}/requirements.in " + " ".join(specs)
+    spec_str =  " ".join(specs)
 
     print(spec_str)
 
