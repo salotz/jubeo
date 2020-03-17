@@ -9,7 +9,6 @@ from . import git
 from . import py
 
 MODULES = [
-    hello,
     core,
     clean,
     env,
