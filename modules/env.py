@@ -279,7 +279,7 @@ def venv_env(cx, name=DEFAULT_ENV):
     print(f"source {venv_path}/bin/activate")
 
 @task
-def env(cx, name=DEFAULT_ENV):
+def make(cx, name=DEFAULT_ENV):
 
     # choose your method:
     if ENV_METHOD == 'conda':
