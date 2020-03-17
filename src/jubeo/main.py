@@ -308,7 +308,6 @@ def init_project(
     # not all of the taskset is taken care of by init so do that here
     taskset_source = source_repo / TASKSET_NAME
     taskset_target = target_project / proj_config['taskset']['dirname']
-    os.makedirs(taskset_target, exist_ok=True)
 
     if osp.exists(taskset_target) and force:
         shutil.rmtree(taskset_target)
@@ -325,5 +324,5 @@ def init_project(
         source_repo,
         target_project,
         proj_config,
-        force=force,
+        force=True,
     )
