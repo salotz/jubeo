@@ -1,7 +1,7 @@
 from invoke import task
 
 from ..config import (
-    PROJECT_DIR,
+    EXE_DIRS,
     TANGLE_DIRS,
 )
 
@@ -12,9 +12,9 @@ def tangle(cx):
     # tangle them
     cx.run("emacs -Q --batch -l org project.org -f org-babel-tangle")
 
-    for tangle_dir in TANGLE_DIRS:
+    for tangle_dir in EXE_DIRS:
         # make them executable
-        cx.run(f'chmod ug+x {PROJECT_DIR}/{tangle_dir}/*')
+        cx.run(f'chmod ug+x ./{tangle_dir}/*')
 
 @task
 def clean(cx):
