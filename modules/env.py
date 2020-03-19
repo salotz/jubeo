@@ -289,16 +289,16 @@ def make(cx, name=DEFAULT_ENV):
         venv_env(cx, name=name)
 
 @task
-def conda_ls(cx):
+def ls_conda(cx):
     print('\n'.join(os.listdir(CONDA_ENVS_DIR)))
 
 @task
-def venv_ls(cx):
+def ls_venv(cx):
 
     print('\n'.join(os.listdir(VENV_DIR)))
 
 @task
-def specs(cx):
+def ls_specs(cx):
 
     print('\n'.join(os.listdir(ENV_SPEC_DIR)))
 
