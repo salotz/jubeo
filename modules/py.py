@@ -5,6 +5,8 @@ from ..config import (
     BENCHMARK_STORAGE_URL,
     ORG_DOCS_SOURCES,
     RST_DOCS_SOURCES,
+    TESTING_PYPIRC,
+    PYPIRC,
 )
 
 import sys
@@ -32,11 +34,11 @@ from pathlib import Path
 #     'glossary',
 #     'tutorials/index',
 # ]
+# PYPIRC = "$HOME/.pypirc"
+# TESTING_PYPIRC = "$HOME/.test-pypirc"
 
 ## CONSTANTS
 
-TESTING_INDEX_URL = "https://test.pypi.org/legacy/"
-PYPI_INDEX_URL = "https://upload.pypi.org/legacy/"
 
 BENCHMARK_STORAGE_URI="\"file://{}\"".format(BENCHMARK_STORAGE_URL)
 
@@ -390,18 +392,23 @@ def build(cx):
 
 
 @task(pre=[clean_dist, build_sdist])
-def publish_test_pypi(cx, version=None):
+def publish_test_pypi(cx,
+                      version=None,
+):
 
     assert version is not None
 
     cx.run("twine upload "
-           f"--repository-url {TESTING_INDEX_URL} "
+           "--non-interactive "
+           f"--repository pypi "
+           f"--config-file {TESTING_PYPIRC} "
            "dist/*")
 
 @task(pre=[clean_dist, update_tools, build_sdist])
 def publish_test(cx):
 
-    publish_test_pypi(cx, version=VERSION)
+    publish_test_pypi(cx,
+                      version=VERSION)
 
 # PyPI
 
@@ -412,7 +419,10 @@ def publish_pypi(cx, version=None):
     assert version is not None
 
     cx.run(f"twine upload "
-           f"--repository-url {PYPI_INDEX_URL} "
+           "--non-interactive "
+           "--repository pypi "
+           f"--repository {PYPI_INDEX_URL} "
+           f"--config-file {PYPIRC} "
            f"dist/*")
 
 

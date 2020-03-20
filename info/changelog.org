@@ -7,6 +7,15 @@ Adheres to [[https://github.com/salotz/rfcs/blob/master/rfcs/salotz.002_semantic
 
 See the git commit log history for full details.
 
+** Unreleased
+
+** [0.0.2a0.dev0] - 2020-03-20
+
+Bug fix release:
+
+- modules repo is retrieved properly
+- fixes porting mistakes in the env and py modules
+
 ** [0.0.1a0.dev0] - 2020-03-16
 
 First working version.

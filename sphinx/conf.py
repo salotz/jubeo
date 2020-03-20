@@ -24,9 +24,9 @@ author = 'Samuel D. Lotz'
 
 # The short X.Y version
 # TODO: fix this by string manipulation
-version = '0.0.1'
+version = '0.0.2'
 # The full version, including alpha/beta/rc tags
-release = '0.0.1a0.dev0'
+release = '0.0.2a0.dev0'
 
 
 # -- General configuration ---------------------------------------------------

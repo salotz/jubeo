@@ -40,7 +40,7 @@ all_requirements = it.chain.from_iterable(_all_requirements)
 
 setup(
     name='jubeo',
-    version='0.0.1a0.dev0',
+    version='0.0.2a0.dev0',
     author="Samuel D. Lotz",
     author_email="samuel.lotz@salotz.info",
     description="Small tool for deploying and updating metaproject tooling.",

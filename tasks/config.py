@@ -5,3 +5,7 @@
 from .sysconfig import *
 
 PROJECT_SLUG = "jubeo"
+VERSION="0.0.2a0.dev0"
+
+PYPIRC="$HOME/.pypirc"
+TESTING_PYPIRC="$HOME/.salotz.d/lib/configs/pypi/salotz_test.pypirc.ini"

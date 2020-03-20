@@ -288,7 +288,8 @@ And then try to install it from an empty environment:
 inv env -n test_install
 #+end_src
 
-Activate the environment e.g.:
+Activate the environment e.g. (make sure if using ~pyenv-virtualenv~
+you are not in a virtualenv):
 
 #+begin_src bash
 source _venv/test_install/bin/activate
