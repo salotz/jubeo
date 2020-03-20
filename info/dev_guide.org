@@ -245,8 +245,8 @@ The target locations for changing versions are in the following files:
 
 - [ ] ~setup.py~
 - [ ] ~src/jubeo/__init__.py~
-- [ ] ~sphinx/config.py~
-- [ ] ~conda/conda-forge/meta.yaml~
+- [ ] ~sphinx/conf.py~
+- [ ] ~tasks/config.py~
 
 # IDEA: would like to have this done automatically with some
 # replacement but I need a robust way to do this. Preferrably not
@@ -310,7 +310,7 @@ pip install dist/BUILD.tar.gz
 They should all succeed.
 
 
-When you change the version number put a 'rc0' at the end of
+When you change the version number put a 'rc0' or 'dev0' at the end of
 the new intended (semantic) number.
 
 Once you have built it and nothing is wrong go ahead and publish it to
@@ -326,6 +326,7 @@ You can test that it works from the index using the same
 And install the package from the test repo with no dependencies:
 
 #+begin_src bash
+inv env -n test_install
 pip install --index-url https://test.pypi.org/simple/ --no-deps jubeo
 #+end_src
 
