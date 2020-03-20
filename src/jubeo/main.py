@@ -4,6 +4,10 @@ import pkgutil
 import shutil
 import os
 import os.path as osp
+import dataclasses as dc
+from typing import (
+    Tuple,
+)
 
 import toml
 from hyperlink import URL
@@ -14,8 +18,16 @@ JUBEO_PROJ_DIR = ".jubeo"
 JUBEO_PROJ_CONF = "jubeo.toml"
 """The config file for individual projects."""
 
-
 TASKSET_NAME = 'tasks'
+
+
+@dc.dataclass
+class ProjConfig():
+
+    upstream_url: URL
+    modules_source_url: URL
+    modules: Tuple[str]
+    taskset_dirname: str
 
 def base_repo_path():
 
@@ -58,6 +70,8 @@ def get_repo(url, cache_path):
 
     elif url.scheme == '' or url.scheme == 'file':
 
+        print("Retrieving from local repository.")
+
         origin_repo_path = Path('/' + '/'.join(url.path))
 
         # get all but the last '.git' at the end
@@ -78,7 +92,13 @@ def get_repo(url, cache_path):
 
     return source_repo_path
 
-def retrieve_upstream(url, cache_path):
+def retrieve_upstream(
+        url: URL,
+        cache_path: Path,
+        proj_config: ProjConfig,
+):
+
+    # TODO: use ProjConfig API, now we are just using a dict
 
     cach_path = Path(cache_path)
     repo_cache_path = cache_path / "specs"
@@ -88,11 +108,7 @@ def retrieve_upstream(url, cache_path):
 
     ## Retrieve external modules
 
-    # we support retrieving modules from a 3rd party source via URL,
-    # this is specified in the jubeo.toml file
-
-    proj_config_path = upstream_repo_path / JUBEO_PROJ_DIR / JUBEO_PROJ_CONF
-    proj_config = toml.load(proj_config_path)
+    # we support retrieving modules from a 3rd party source via URL
 
     mod_source_url = URL.from_text(
         osp.expandvars(osp.expanduser(proj_config['modules']['source_url'])))

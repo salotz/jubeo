@@ -146,9 +146,19 @@ def update(project_dir):
     url_str = osp.expandvars(proj_config['upstream_url'])
     url = URL.from_text(url_str)
 
+    module_url = URL.from_text(
+        osp.expandvars(osp.expanduser(proj_config['modules']['source_url'])))
+
+    print(f"Using upstream: {url}")
+    print(f"Retrieving modules from: {module_url}")
+
     # retrieve the upstream repo and return the exact file location of
     # the jubeo bundle
-    source_repo_path = retrieve_upstream(url, cache_path)
+    source_repo_path = retrieve_upstream(
+        url,
+        cache_path,
+        proj_config,
+    )
 
     ## update the project
     update_project(

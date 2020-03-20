@@ -240,6 +240,8 @@ def conda_env(cx, name=DEFAULT_ENV):
     print("--------------------------------------------------------------------------------")
     print(f"run: conda activate {env_dir}")
 
+    return env_dir
+
 
 def venv_env(cx, name=DEFAULT_ENV):
 
@@ -277,6 +279,8 @@ def venv_env(cx, name=DEFAULT_ENV):
     print("----------------------------------------")
     print("to activate run:")
     print(f"source {venv_path}/bin/activate")
+
+    return venv_path
 
 @task
 def make(cx, name=DEFAULT_ENV):
