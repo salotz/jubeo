@@ -31,9 +31,9 @@ def init(cx):
 
 
 @task
-def publish_tags(cx):
+def publish(cx):
 
-    tag_string = VCS_RELEASE_TAG_TEMPLATE.format(CURRENT_VERSION)
+    tag_string = VCS_RELEASE_TAG_TEMPLATE.format(VERSION)
 
     cx.run(f"git push origin {tag_string}")
 
