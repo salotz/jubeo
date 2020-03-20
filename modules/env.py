@@ -92,6 +92,9 @@ def deps_pip_pin(cx,
 
         # for each repo spec add this to the list of specs to evaluate for
         for dev_repo_spec in dev_repo_specs:
+            # expand env vars
+            dev_repo_spec = osp.expandvars(osp.expanduser(dev_repo_spec))
+
             assert osp.exists(dev_repo_spec), f"Repo spec {dev_repo_spec} doesn't exist"
 
             specs.append(dev_repo_spec)
@@ -99,6 +102,7 @@ def deps_pip_pin(cx,
 
     spec_str =  " ".join(specs)
 
+    print("Using simultaneous dev specs:")
     print(spec_str)
 
     upgrade_str = ''
@@ -166,10 +170,12 @@ def deps_conda_pin(cx,
         env_spec_path / CONDA_ABSTRACT_REQUIREMENTS,
         mangled_env_spec_path / CONDA_ABSTRACT_REQUIREMENTS,
     )
-    shutil.copyfile(
-        env_spec_path / PYTHON_VERSION_FILE,
-        mangled_env_spec_path / PYTHON_VERSION_FILE,
-    )
+
+    if osp.exists(env_spec_path / PYTHON_VERSION_FILE):
+        shutil.copyfile(
+            env_spec_path / PYTHON_VERSION_FILE,
+            mangled_env_spec_path / PYTHON_VERSION_FILE,
+        )
 
 
     # then create the mangled env

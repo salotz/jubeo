@@ -72,7 +72,12 @@ def get_repo(url, cache_path):
 
         print("Retrieving from local repository.")
 
-        origin_repo_path = Path('/' + '/'.join(url.path))
+        # if it is a rooted path add the root
+        if url.rooted:
+            origin_repo_path = Path('/' + '/'.join(url.path))
+        else:
+            origin_repo_path = Path('/'.join(url.path))
+
 
         # get all but the last '.git' at the end
         repo_name = url.path[-1]
