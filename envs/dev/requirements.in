@@ -44,10 +44,3 @@ pytest-datadir
 pytest-cov
 pytest-benchmark
 pytest-profiling
-
-
-# package
-gitpython
-click
-hyperlink
-toml
