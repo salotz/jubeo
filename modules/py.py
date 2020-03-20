@@ -326,20 +326,6 @@ def version_which(cx):
     # get the current version
     cx.run(f"python -m {project_slug()}._print_version")
 
-@task
-def release(cx):
-
-    # SNIPPET
-    # cx.run("python -m wumpus.version")
-
-    print("Releasing: ", VERSION)
-
-    # TODO import from git module
-    release_tag(cx, release=VERSION)
-
-    # IDEA, TODO: handle the manual checklist of things
-
-
 ### Packaging
 
 ## Building

@@ -233,7 +233,7 @@ forums by which it is published (e.g. PyPI, Github, etc.).
 You can check the current version number with this command:
 
 #+begin_src bash
-inv version-which
+inv py.version-which
 #+end_src
 
 Increase the version number we currently do it by hand (although an
@@ -277,7 +277,7 @@ commit from the actual changes to the code:
 To test a build go ahead and run:
 
 #+begin_src bash
-inv build
+inv py.build
 #+end_src
 
 # TODO: add a test builds target
@@ -317,7 +317,7 @@ Once you have built it and nothing is wrong go ahead and publish it to
 the test indexes (if available):
 
 #+begin_src bash
-inv publish-test
+inv py.publish-test
 #+end_src
 
 You can test that it works from the index using the same
@@ -343,7 +343,7 @@ should follow a fixed form like
 Then you can tag the release in the ~git~ commit history:
 
 #+begin_src bash
-inv release
+inv git.release
 #+end_src
 
 Publishing the results will vary but you can start with publishing the
