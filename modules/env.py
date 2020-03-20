@@ -171,6 +171,9 @@ def deps_conda_pin(cx,
     shutil.rmtree(env_dir)
     shutil.rmtree(mangled_env_spec_path)
 
+    print("--------------------------------------------------------------------------------")
+    print(f"This is an automated process do not attempt to activate the '__mangled' environment")
+
 # altogether
 @task
 def deps_pin(cx, name=DEFAULT_ENV):
