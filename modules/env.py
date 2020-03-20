@@ -4,6 +4,8 @@ import sys
 import os
 import os.path as osp
 from pathlib import Path
+from warnings import warn
+import shutil
 
 from ..config import (
     ENV_METHOD,
@@ -47,6 +49,17 @@ def parse_list_format(list_str):
     return [line for line in list_str.split('\n')
             if not line.startswith("#") and line.strip()]
 
+
+def read_pyversion_file(py_version_path: Path):
+
+    with open(py_version_path, 'r') as rf:
+        py_version = rf.read().strip()
+
+    return py_version
+
+
+def get_current_pyversion():
+    return f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 
 ### Dependencies
 # managing dependencies for the project at runtime
@@ -98,7 +111,6 @@ def deps_pip_pin(cx,
 
 
 ## conda: managing conda dependencies
-
 def deps_conda_pin(cx,
                    name=DEFAULT_ENV,
                    upgrade=False,
@@ -124,10 +136,23 @@ def deps_conda_pin(cx,
     # make the environment under a mangled name so we don't screw with
     # the other one
     mangled_name = f"__mangled_{name}"
-    env_dir = conda_env(cx, name=mangled_name)
 
-    # REFACT: This is copied from the conda_env function and should be
-    # factored into it's own thing
+    mangled_env_spec_path = Path(ENVS_DIR) / mangled_name
+
+    # remove if there is one already there
+    if osp.exists(mangled_env_spec_path):
+        shutil.rmtree(mangled_env_spec_path)
+
+
+    # copy the desired spec to the mangled one
+    shutil.copytree(
+        env_spec_path,
+        mangled_env_spec_path,
+    )
+
+
+    # then create the mangled env
+    env_dir = conda_env(cx, name=mangled_name)
 
     # then install the packages so we can export them
     with cx.prefix(f'eval "$(conda shell.bash hook)" && conda activate {env_dir}'):
@@ -142,9 +167,9 @@ def deps_conda_pin(cx,
            f"-p {env_dir} "
            f"-f {env_spec_path}/env.pinned.yaml")
 
-
-    # then destroy the temporary mangled env
-    cx.run(f"rm -rf {env_dir}")
+    # then destroy the temporary mangled env and spec
+    shutil.rmtree(env_dir)
+    shutil.rmtree(mangled_env_spec_path)
 
 # altogether
 @task
@@ -187,18 +212,25 @@ def conda_env(cx, name=DEFAULT_ENV):
     # using the local envs dir
     env_dir = Path(CONDA_ENVS_DIR) / name
 
-    # figure out which python version to use, if the 'py_version.txt'
+    # clean up old envs if they weren't already
+    if osp.exists(env_dir):
+        shutil.rmtree(env_dir)
+
+    # figure out which python version to use, if the 'pyversion.txt'
     # file exists read it
     py_version_path = env_spec_path / PYTHON_VERSION_FILE
     if osp.exists(py_version_path):
-        with open(py_version_path, 'r') as rf:
-            py_version = rf.read().strip()
 
-        # TODO: validate the string for python version
+        print("Using specified python version")
+
+        py_version = read_pyversion_file(py_version_path)
 
     # otherwise use the one you are currently using
     else:
-        py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+        print("Using current envs python version")
+        py_version = get_current_pyversion()
+
+    print(f"Using python version: {py_version}")
 
     # create the environment
     cx.run(f"conda create -y "
@@ -252,6 +284,25 @@ def venv_env(cx, name=DEFAULT_ENV):
 
     # ensure the directory
     cx.run(f"mkdir -p {venv_dir_path}")
+
+    # TODO: choose the python version to use
+    py_version_path = env_spec_path / PYTHON_VERSION_FILE
+
+    # SNIPPET
+    if osp.exists(py_version_path):
+
+        warn("Custom python versions is not supported for venv mode yet."
+             "Please use pyenv or similar to set current env.")
+        py_version = get_current_pyversion()
+
+        # SNIPPET
+        # py_version = read_pyversion_file(py_version_path)
+
+    # otherwise use the one you are currently using
+    else:
+        py_version = get_current_pyversion()
+
+    print(f"Using python version: {py_version}")
 
     # create the env requested
     cx.run(f"python -m venv {venv_path}")
