@@ -407,7 +407,6 @@ def publish_pypi(cx, version=None):
     cx.run(f"twine upload "
            "--non-interactive "
            "--repository pypi "
-           f"--repository {PYPI_INDEX_URL} "
            f"--config-file {PYPIRC} "
            f"dist/*")
 
@@ -419,8 +418,6 @@ def publish_pypi(cx, version=None):
 #     pass
 
 @task(pre=[clean_dist, update_tools, build])
-def publish(cx, version=None):
+def publish(cx):
 
-    # TODO: import the git module
-    publish_tags(cx, version=VERSION)
     publish_pypi(cx, version=VERSION)

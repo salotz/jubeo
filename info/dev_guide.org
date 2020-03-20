@@ -350,7 +350,8 @@ Publishing the results will vary but you can start with publishing the
 package to PyPI and the VCS hosts with the real publish target:
 
 #+begin_src bash
-inv publish
+inv py.publish
+inv git.publish
 #+end_src
 
 
