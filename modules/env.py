@@ -42,6 +42,14 @@ PYTHON_VERSION_FILE = 'pyversion.txt'
 DEV_REQUIREMENTS_LIST = 'dev.requirements.list'
 """Multi-development mode repos to read dependencies from."""
 
+# pip specific
+PIP_ABSTRACT_REQUIREMENTS = 'requirements.in'
+PIP_COMPILED_REQUIREMENTS = 'requirements.txt'
+
+# conda specific
+CONDA_ABSTRACT_REQUIREMENTS = 'env.yaml'
+CONDA_COMPILED_REQUIREMENTS = 'env.pinned.yaml'
+
 ### Util
 
 def parse_list_format(list_str):
@@ -75,7 +83,7 @@ def deps_pip_pin(cx,
     # gather any development repos that are colocated on this machine
     # and solve the dependencies together
 
-    specs = [f"{path}/requirements.in"]
+    specs = [str(path / PIP_ABSTRACT_REQUIREMENTS)]
 
     # to get the development repos read the DEV list
     if osp.exists(path / DEV_REQUIREMENTS_LIST):
@@ -100,14 +108,14 @@ def deps_pip_pin(cx,
 
     cx.run("pip-compile "
            f"{upgrade_str} "
-           f"--output-file={path}/requirements.txt "
+           f"--output-file={path}/{PIP_COMPILED_REQUIREMENTS} "
            f"{spec_str}")
 
     # SNIPPET: generate hashes is not working right, or just confusing me
     # cx.run("python -m piptools compile "
     #        "--generate-hashes "
-    #        "--output-file=requirements.txt "
-    #        f"requirements.in")
+    #        "--output-file={PIP_COMPILED_REQUIREMENTS} "
+    #        f"{PIP_ABSTRACT_REQUIREMENTS}")
 
 
 ## conda: managing conda dependencies
@@ -122,16 +130,16 @@ def deps_conda_pin(cx,
     env_spec_path = Path(ENVS_DIR) / name
 
     if not optional:
-        assert osp.exists(env_spec_path / 'env.yaml'), \
+        assert osp.exists(env_spec_path / CONDA_ABSTRACT_REQUIREMENTS), \
             "There must be an 'env.yaml' file to compile from"
 
     else:
-        if not osp.exists(env_spec_path / 'env.yaml'):
+        if not osp.exists(env_spec_path / CONDA_ABSTRACT_REQUIREMENTS):
             return None
 
     # delete the pinned file
-    if osp.exists(env_spec_path / 'env.pinned.yaml'):
-        os.remove(env_spec_path / 'env.pinned.yaml')
+    if osp.exists(env_spec_path / CONDA_COMPILED_REQUIREMENTS):
+        os.remove(env_spec_path / CONDA_COMPILED_REQUIREMENTS)
 
     # make the environment under a mangled name so we don't screw with
     # the other one
@@ -143,11 +151,24 @@ def deps_conda_pin(cx,
     if osp.exists(mangled_env_spec_path):
         shutil.rmtree(mangled_env_spec_path)
 
+    # make sure the new dir is initialized
+    os.makedirs(mangled_env_spec_path,
+                exist_ok=True
+    )
 
-    # copy the desired spec to the mangled one
-    shutil.copytree(
-        env_spec_path,
-        mangled_env_spec_path,
+    # TODO: simultaneous dev requirements from other projects that
+    # require a conda install
+
+    # copy the 'env.yaml' and 'pyversion.txt' files to the new env. If
+    # we include the requirements.txt file it will screw with the
+    # pinning process
+    shutil.copyfile(
+        env_spec_path / CONDA_ABSTRACT_REQUIREMENTS,
+        mangled_env_spec_path / CONDA_ABSTRACT_REQUIREMENTS,
+    )
+    shutil.copyfile(
+        env_spec_path / PYTHON_VERSION_FILE,
+        mangled_env_spec_path / PYTHON_VERSION_FILE,
     )
 
 
@@ -160,12 +181,12 @@ def deps_conda_pin(cx,
         # only install the declared dependencies
         cx.run(f"conda env update "
                f"--prefix {env_dir} "
-               f"--file {env_spec_path}/env.yaml")
+               f"--file {env_spec_path}/{CONDA_ABSTRACT_REQUIREMENTS}")
 
     # pin to a 'env.pinned.yaml' file
     cx.run(f"conda env export "
            f"-p {env_dir} "
-           f"-f {env_spec_path}/env.pinned.yaml")
+           f"-f {env_spec_path}/{CONDA_COMPILED_REQUIREMENTS}")
 
     # then destroy the temporary mangled env and spec
     shutil.rmtree(env_dir)
@@ -245,18 +266,18 @@ def conda_env(cx, name=DEFAULT_ENV):
 
         # install the conda dependencies. choose a specification file
         # based on these priorities of most pinned to least frozen.
-        if osp.exists(env_spec_path / "env.pinned.yaml"):
+        if osp.exists(env_spec_path / CONDA_COMPILED_REQUIREMENTS):
 
             cx.run(f"conda env update "
                    f"--prefix {env_dir} "
-                   f"--file {env_spec_path}/env.pinned.yaml")
+                   f"--file {env_spec_path}/{CONDA_COMPILED_REQUIREMENTS}")
 
 
-        elif osp.exists(env_spec_path / "env.yaml"):
+        elif osp.exists(env_spec_path / CONDA_ABSTRACT_REQUIREMENTS):
 
             cx.run(f"conda env update "
                    f"--prefix {env_dir} "
-                   f"--file {env_spec_path}/env.yaml")
+                   f"--file {env_spec_path}/{CONDA_ABSTRACT_REQUIREMENTS}")
 
         else:
             # don't do a conda env pin
@@ -264,13 +285,13 @@ def conda_env(cx, name=DEFAULT_ENV):
 
 
         # install the extra pip dependencies
-        if osp.exists(f"{env_spec_path}/requirements.txt"):
+        if osp.exists(env_spec_path / PIP_COMPILED_REQUIREMENTS):
             cx.run(f"{env_dir}/bin/pip install "
-                   f"-r {env_spec_path}/requirements.txt")
+                   f"-r {env_spec_path}/{PIP_COMPILED_REQUIREMENTS}")
 
         # install the package itself
-        if osp.exists(f"{env_spec_path}/self.requirements.txt"):
-            cx.run(f"{env_dir}/bin/pip install -r {env_spec_path}/self.requirements.txt")
+        if osp.exists(env_spec_path / SELF_REQUIREMENTS):
+            cx.run(f"{env_dir}/bin/pip install -r {env_spec_path}/{SELF_REQUIREMENTS}")
 
     print("--------------------------------------------------------------------------------")
     print(f"run: conda activate {env_dir}")
@@ -316,15 +337,15 @@ def venv_env(cx, name=DEFAULT_ENV):
         # update pip
         cx.run("pip install --upgrade pip")
 
-        if osp.exists(f"{env_spec_path}/{SELF_REQUIREMENTS}"):
-            cx.run(f"pip install -r {env_spec_path}/requirements.txt")
+        if osp.exists(env_spec_path / SELF_REQUIREMENTS):
+            cx.run(f"pip install -r {env_spec_path}/{PIP_COMPILED_REQUIREMENTS}")
 
         else:
             print("No requirements.txt found")
 
         # if there is a 'self.requirements.txt' file specifying how to
         # install the package that is being worked on install it
-        if osp.exists(f"{env_spec_path}/{SELF_REQUIREMENTS}"):
+        if osp.exists(env_spec_path / SELF_REQUIREMENTS):
             cx.run(f"pip install -r {env_spec_path}/{SELF_REQUIREMENTS}")
 
         else:
@@ -336,7 +357,7 @@ def venv_env(cx, name=DEFAULT_ENV):
 
     return venv_path
 
-@task
+@task(default=True)
 def make(cx, name=DEFAULT_ENV):
 
     # choose your method:

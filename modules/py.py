@@ -159,7 +159,7 @@ def docs_build(cx):
     with cx.cd('sphinx'):
 
         # build the API Documentation
-        cx.run("sphinx-apidoc -f --separate --private --ext-autodoc --module-first --maxdepth 1 -o api ../src/PROJECT_SLUG")
+        cx.run(f"sphinx-apidoc -f --separate --private --ext-autodoc --module-first --maxdepth 1 -o api ../src/PROJECT_SLUG")
 
         # then do the sphinx build process
         cx.run("sphinx-build -b html -E -a -j 6 . ./_build/html/")
@@ -254,7 +254,7 @@ def lint(cx):
     cx.run("mkdir -p metrics/lint")
 
     cx.run("rm -f metrics/lint/flake8.txt")
-    cx.run("flake8 --output-file=metrics/lint/flake8.txt src/PROJECT_SLUG")
+    cx.run(f"flake8 --output-file=metrics/lint/flake8.txt src/PROJECT_SLUG")
 
 @task
 def complexity(cx):
@@ -262,8 +262,8 @@ def complexity(cx):
 
     cx.run("mkdir -p metrics/code_quality")
 
-    cx.run("lizard -o metrics/code_quality/lizard.csv src/PROJECT_SLUG")
-    cx.run("lizard -o metrics/code_quality/lizard.html src/PROJECT_SLUG")
+    cx.run(f"lizard -o metrics/code_quality/lizard.csv src/PROJECT_SLUG")
+    cx.run(f"lizard -o metrics/code_quality/lizard.html src/PROJECT_SLUG")
 
     # SNIPPET: annoyingly opens the browser
 
@@ -322,7 +322,7 @@ def version_which(cx):
     """Tell me what version the project is at."""
 
     # get the current version
-    cx.run("python -m {PROJECT_SLUG}._print_version")
+    cx.run(f"python -m {PROJECT_SLUG}._print_version")
 
 @task
 def release(cx):
