@@ -1,0 +1,15 @@
+{
+    "project_name" : "jubeo",
+    "project_slug" : "jubeo",
+    "project_description" : "Meta-project Protocol",
+    "initial_version" : "0.0.0a0.dev0",
+    "copyright" : "BY-NC",
+    "license" : "MIT",
+    "owner_name" : "Samuel D. Lotz",
+    "owner_email" : "samuel.lotz@salotz.info",
+    "owner_nickname" : "salotz",
+    "url" : "https://github.com/{{cookiecutter.owner_nickname}}/{{cookiecutter.project_slug}}",
+    "dev_url" : "https://github.com/{{cookiecutter.owner_nickname}}/{{cookiecutter.project_slug}}",
+    "doc_url" : "https://{{cookiecutter.owner_nickname}}.github.io/{{cookiecutter.project_slug}}",
+    "sdist_url" : "https://github.com/{{cookiecutter.owner_nickname}}/{{cookiecutter.project_slug}}/releases/download/"
+}
