@@ -392,10 +392,10 @@ def ls(cx):
 
     # choose your method:
     if ENV_METHOD == 'conda':
-        conda_ls(cx)
+        ls_conda(cx)
 
     elif ENV_METHOD == 'venv':
-        venv_ls(cx)
+        ls_venv(cx)
 
 @task
 def clean(cx):
