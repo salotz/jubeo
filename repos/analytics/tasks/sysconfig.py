@@ -48,3 +48,7 @@ BENCHMARK_STORAGE_URL = None
 ORG_DOCS_SOURCES = []
 RST_DOCS_SOURCES = []
 
+# also not really useful here since we won't be publishing any
+# packages on the PyPI indexes
+PYPIRC="$HOME/.pypirc"
+TESTING_PYPIRC="$HOME/.pypirc"
