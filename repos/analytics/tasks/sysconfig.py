@@ -36,6 +36,8 @@ TANGLE_DIRS = []
 
 ### Project
 
+# the path to the project
+PROJECT_DIR = '.'
 PROJECT_DIRS = []
 RESOURCES = []
 RESOURCE_DIR = None
