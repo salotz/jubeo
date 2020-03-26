@@ -1,5 +1,9 @@
 from invoke import task
 
+import os.path as osp
+import os
+from pathlib import Path
+
 @task
 def sanity(cx):
     """Perform sanity check for jubeo"""
@@ -8,19 +12,15 @@ def sanity(cx):
 
 
 @task
-def pin_deps(cx, repo='base'):
+def pin_tool_deps(cx):
     """Pins or upgrades the requirements.txt for the jubeo tooling from
     the requirements.in (from the upstream repo) and the
     local.requirements.in (for project specific tooling dependencies)
     files."""
 
-    repo_path = Path("repos") / repo
-
-    assert osp.exists(repo_path), f"No repo named: {repo}"
-
-    req_in = repo_path / '.jubeo' / "requirements.in"
-    local_req_in = repo_path / '.jubeo' / "local.requirements.in"
-    req_txt = repo_path / '.jubeo' / "requirements.txt"
+    req_in = Path('.jubeo') / "requirements.in"
+    local_req_in = Path('.jubeo') / "local.requirements.in"
+    req_txt = Path('.jubeo') / "requirements.txt"
 
     assert osp.exists(req_in), "No 'requirements.in' file"
 
