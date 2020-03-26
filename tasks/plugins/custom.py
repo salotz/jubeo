@@ -21,3 +21,4 @@ def pin_repo_deps(cx, repo='base'):
     assert osp.exists(req_in), "No 'requirements.in' file"
 
     cx.run(f"pip-compile --upgrade --output-file={req_txt} {req_in}")
+

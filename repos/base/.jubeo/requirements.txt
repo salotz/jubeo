@@ -4,4 +4,12 @@
 #
 #    pip-compile --output-file=repos/base/.jubeo/requirements.txt repos/base/.jubeo/requirements.in
 #
+click==7.1.1              # via jubeo
+gitdb==4.0.2              # via gitpython
+gitpython==3.1.0          # via jubeo
+hyperlink==19.0.0         # via jubeo
+idna==2.9                 # via hyperlink
 invoke==1.4.1             # via -r repos/base/.jubeo/requirements.in
+jubeo==0.0.2a0.dev0       # via -r repos/base/.jubeo/requirements.in
+smmap==3.0.1              # via gitdb
+toml==0.10.0              # via jubeo
