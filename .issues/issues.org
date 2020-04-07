@@ -30,7 +30,45 @@ Because we are only replacing small snippets of text out of
 potentially large documents I would like use the comment bounded
 replacements.
 
-** TODO 0001: Add support for different python versions via pyenv   :feature:
+
+** DONE 0001: Add support for different python versions via pyenv   :feature:
 
 In the python module we want to support using different versions of
 python with environments like we can in conda.
+
+This should take two forms:
+
+- using venv like normal but switching to the right version in pyenv
+- actually making the virtualenv with pyenv
+
+#+begin_src bash
+pyenv virtualenv 2.7.17 testing-otherversion
+#+end_src
+
+The problem with the former is that not all versions of python support
+venv which I am using.
+
+So for modern development it is fine but for testing a bunch of them
+it won't work.
+
+
+venv works with 3.3 and above.
+
+
+In the end I made it work with a patch to the pyenv-virtualenv
+code. Its a little hacky but it works.
+
+Should think about moving to something more robust like nox.
+
+** TODO 0002: Add support for nox in py                             :feature:
+
+
+Nox is a nice test runner like tox but it works like invoke. Its very
+nice and works so easily (unlike tox which I alwasy have endless
+problems with whenever I try it).
+
+It even supports conda and you can save the envs for doing interactive
+stuff with.
+
+Should integrate nicely with the invoke targets so we don't end up
+duplicating them all over the place.

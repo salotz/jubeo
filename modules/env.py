@@ -17,8 +17,9 @@ from ..config import (
 
 # SNIPPET:
 
-# # which virtual environment tool to use: venv or conda
-# ENV_METHOD = 'venv'
+# # which virtual environment tool to use: pyenv-virtualenv, venv, or
+# conda.  pyenv-virtualenv and conda works for all versions, venv only
+# works with python3.3 and above ENV_METHOD = 'venv'
 
 # # which env spec to use by default
 # DEFAULT_ENV = 'dev'
@@ -31,6 +32,9 @@ from ..config import (
 # directories the actual environments are stored
 VENV_DIR = "_venv"
 CONDA_ENVS_DIR = "_conda_envs"
+# this will be set to the PYENV_PREFIX with the path to the project
+# dir
+PYENV_DIR = "_pyenv"
 
 # specified names of env specs files
 SELF_REQUIREMENTS = 'self.requirements.txt'
@@ -318,22 +322,19 @@ def venv_env(cx, name=DEFAULT_ENV):
     # ensure the directory
     cx.run(f"mkdir -p {venv_dir_path}")
 
-    # TODO: choose the python version to use
     py_version_path = env_spec_path / PYTHON_VERSION_FILE
 
-    # SNIPPET
+    py_version = get_current_pyversion()
     if osp.exists(py_version_path):
 
-        warn("Custom python versions is not supported for venv mode yet."
-             "Please use pyenv or similar to set current env.")
-        py_version = get_current_pyversion()
+        spec_py_version = read_pyversion_file(py_version_path)
+        if spec_py_version != py_version:
+            raise ValueError(
+                f"Python version {spec_py_version} was specified in {PYTHON_VERSION_FILE} "
+                f"but Python {py_version} is activated. For the venv method you must have "
+                f"the desired python version already activated"
+        )
 
-        # SNIPPET
-        # py_version = read_pyversion_file(py_version_path)
-
-    # otherwise use the one you are currently using
-    else:
-        py_version = get_current_pyversion()
 
     print(f"Using python version: {py_version}")
 
@@ -366,6 +367,83 @@ def venv_env(cx, name=DEFAULT_ENV):
 
     return venv_path
 
+def pyenv_env(cx, name=DEFAULT_ENV):
+
+    # project has its own pyenv root
+    pyenv_local_dir = Path(os.getcwd()) / PYENV_DIR
+
+    env_spec_path = Path(ENVS_DIR) / name
+
+    # ensure the directory
+    cx.run(f"mkdir -p {pyenv_local_dir}")
+
+
+    env_path = f"{pyenv_local_dir}/{name}"
+    cx.run("rm -rf {env_path}")
+
+    py_version_path = env_spec_path / PYTHON_VERSION_FILE
+
+    if osp.exists(py_version_path):
+
+        py_version = read_pyversion_file(py_version_path)
+
+    # otherwise use the one you are currently using
+    else:
+        py_version = get_current_pyversion()
+
+    print(f"Using python version: {py_version}")
+
+    # TODO: use pyenv to make the virtualenv with the right version
+
+    # if you already have pyenv installed and there are versions of
+    # python installed there we will preferentially use them while
+    # ignoring the envs there since that is a lot of unnecessary files
+    # to have all the pythons installed separately.
+
+    pyenv_root = Path(osp.expandvars("$PYENV_ROOT"))
+
+    # go ahead and use the pyenv-virtual-local command
+    if pyenv_root.exists():
+        cx.run(f"pyenv virtualenv-local \\"
+               f"--alt-dir {pyenv_local_dir} \\"
+               f"{py_version} \\"
+               f"{name}"
+        )
+
+
+    # currently we dont' support installing it
+    else:
+        raise FileNotFoundError(
+            f"pyenv not installed"
+            )
+
+    # then install the things we need
+    with cx.prefix(f"source {env_path}/bin/activate"):
+
+        # update pip
+        cx.run("pip install --upgrade pip")
+
+        if osp.exists(env_spec_path / SELF_REQUIREMENTS):
+            cx.run(f"pip install -r {env_spec_path}/{PIP_COMPILED_REQUIREMENTS}")
+
+        else:
+            print("No requirements.txt found")
+
+        # if there is a 'self.requirements.txt' file specifying how to
+        # install the package that is being worked on install it
+        if osp.exists(env_spec_path / SELF_REQUIREMENTS):
+            cx.run(f"pip install -r {env_spec_path}/{SELF_REQUIREMENTS}")
+
+        else:
+            print("No self.requirements.txt found")
+
+    print("----------------------------------------")
+    print("to activate run:")
+    print(f"source {env_path}/bin/activate")
+
+    return env_path
+
+
 @task(default=True)
 def make(cx, name=DEFAULT_ENV):
 
@@ -375,6 +453,11 @@ def make(cx, name=DEFAULT_ENV):
 
     elif ENV_METHOD == 'venv':
         venv_env(cx, name=name)
+
+    elif ENV_METHOD == 'pyenv':
+        print("using pyenv")
+        pyenv_env(cx, name=name)
+
 
 @task
 def ls_conda(cx):
