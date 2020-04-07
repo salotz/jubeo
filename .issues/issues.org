@@ -1,0 +1,36 @@
+* Issues
+
+** TODO 0000: Auto Version Increment                                :feature:
+
+This is a feature that should go in the ~py~ and ~dev~ modules.
+
+Support for:
+
+- date versions
+- major, minor, micro
+- alpha
+- beta
+- dev
+- rc
+
+version bump only does major minor micro.
+
+
+Ideas:
+
+- PEGs
+- regexes
+- staged template files
+- comment bounded replacements
+
+Should pick one. I like to be deterministic and debuggable so I prefer
+the templates options.
+
+Because we are only replacing small snippets of text out of
+potentially large documents I would like use the comment bounded
+replacements.
+
+** TODO 0001: Add support for different python versions via pyenv   :feature:
+
+In the python module we want to support using different versions of
+python with environments like we can in conda.
