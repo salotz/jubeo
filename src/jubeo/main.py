@@ -7,6 +7,7 @@ import os.path as osp
 import dataclasses as dc
 from typing import (
     Tuple,
+    Optional,
 )
 
 import toml
@@ -100,7 +101,7 @@ def get_repo(url, cache_path):
 def retrieve_upstream(
         url: URL,
         cache_path: Path,
-        proj_config: ProjConfig,
+        proj_config = None
 ):
 
     # TODO: use ProjConfig API, now we are just using a dict
@@ -111,12 +112,17 @@ def retrieve_upstream(
     # get the spec repo
     upstream_repo_path = get_repo(url, repo_cache_path)
 
-    ## Retrieve external modules
+    # load the local config otherwise use the upstream's default
+    # config
+    if proj_config is None:
+        proj_config = load_proj_config(upstream_repo_path)
 
-    # we support retrieving modules from a 3rd party source via URL
+    ## Retrieve external modules
 
     mod_source_url = URL.from_text(
         osp.expandvars(osp.expanduser(proj_config['modules']['source_url'])))
+
+    # we support retrieving modules from a 3rd party source via URL
     modules = proj_config['modules']['modules']
 
     # then get the modules repo if any where requested

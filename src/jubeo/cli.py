@@ -111,8 +111,17 @@ def init(force, taskset_name, upstream, project_dir):
     else:
         upstream_url = URL.from_text(upstream)
 
+    try:
+        proj_config = load_proj_config(project_dir)
+    except FileNotFoundError:
+        proj_config = None
+
     # then we can simply copy from this downloaded repo
-    source_repo_path = Path(retrieve_upstream(upstream_url, cache_path))
+    source_repo_path = Path(retrieve_upstream(
+        upstream_url,
+        cache_path,
+        proj_config = proj_config,
+    ))
 
     init_project(
         source_repo_path,
