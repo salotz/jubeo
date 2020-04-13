@@ -7,7 +7,7 @@
 upstream_url = "git+https://github.com/salotz/jubeo.git#repos/cookiecutter"
 
 # SNIPPET: for local dev
-# upstream_url = "file://$HOME/tree/personal/devel/jubeo/repos/base"
+# upstream_url = "file://$HOME/tree/personal/devel/jubeo/repos/cookiecutter"
 
 [modules]
 
