@@ -2,3 +2,4 @@ jubeo
 invoke
 pip-tools
 versioneer
+coverage

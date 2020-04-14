@@ -2,7 +2,7 @@ from invoke import task
 
 from ..config import (
     VERSION,
-    BENCHMARK_STORAGE_URL,
+    REPORTS_DIR,
     ORG_DOCS_SOURCES,
     RST_DOCS_SOURCES,
     TESTING_PYPIRC,
@@ -17,7 +17,7 @@ from pathlib import Path
 ## User config examples
 
 # SNIPPET:
-# BENCHMARK_STORAGE_URL="./metrics/benchmarks"
+# REPORTS_DIR = "reports"
 # ORG_DOCS_SOURCES = [
 #     'changelog',
 #     'dev_guide',
@@ -40,7 +40,7 @@ from pathlib import Path
 ## CONSTANTS
 
 
-BENCHMARK_STORAGE_URI="\"file://{}\"".format(BENCHMARK_STORAGE_URL)
+BENCHMARK_STORAGE_URI="\"file://{REPORTS_DIR}/benchmarks\""
 
 
 def project_slug():
@@ -218,13 +218,13 @@ def tests_benchmarks(cx):
 @task
 def tests_integration(cx):
     with cx.cd("tests/tests/test_integration"):
-        cx.run(f"pytest -m 'not interactive'",
+        cx.run(f"coverage run -m pytest -m 'not interactive'",
                warn=True)
 
 @task
 def tests_unit(cx):
     with cx.cd("tests/tests/test_unit"):
-        cx.run(f"pytest -m 'not interactive'",
+        cx.run(f"coverage run -m pytest -m 'not interactive'",
                warn=True)
 
 @task
@@ -258,29 +258,34 @@ def tests_nox(cx):
 
     NotImplemented
 
-### Code Quality
+
+### Code & Test Quality
+
+@task
+def coverage(cx):
+    cx.run("coverage report")
 
 @task
 def lint(cx):
 
-    cx.run("mkdir -p metrics/lint")
+    cx.run(f"mkdir -p {REPORTS_DIR}/lint")
 
-    cx.run("rm -f metrics/lint/flake8.txt")
-    cx.run(f"flake8 --output-file=metrics/lint/flake8.txt src/{project_slug()}")
+    cx.run(f"rm -f {REPORTS_DIR}/lint/flake8.txt")
+    cx.run(f"flake8 --output-file={REPORTS_DIR}/lint/flake8.txt src/{project_slug()}")
 
 @task
 def complexity(cx):
     """Analyze the complexity of the project."""
 
-    cx.run("mkdir -p metrics/code_quality")
+    cx.run(f"mkdir -p {REPORTS_DIR}/code_quality")
 
-    cx.run(f"lizard -o metrics/code_quality/lizard.csv src/{project_slug()}")
-    cx.run(f"lizard -o metrics/code_quality/lizard.html src/{project_slug()}")
+    cx.run(f"lizard -o {REPORTS_DIR}/code_quality/lizard.csv src/{project_slug()}")
+    cx.run(f"lizard -o {REPORTS_DIR}/code_quality/lizard.html src/{project_slug()}")
 
     # SNIPPET: annoyingly opens the browser
 
     # make a cute word cloud of the things used
-    # cx.run("(cd metrics/code_quality; lizard -EWordCount src/project_slug() > /dev/null)")
+    # cx.run(f"(cd {REPORTS_DIR}/code_quality; lizard -EWordCount src/project_slug() > /dev/null)")
 
 @task(pre=[complexity, lint])
 def quality(cx):

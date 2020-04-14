@@ -5,6 +5,7 @@
 #    pip-compile --output-file=repos/python/.jubeo/requirements.txt repos/python/.jubeo/requirements.in
 #
 click==7.1.1              # via jubeo, pip-tools
+coverage==5.1             # via -r repos/python/.jubeo/requirements.in
 gitdb==4.0.4              # via gitpython
 gitpython==3.1.1          # via jubeo
 hyperlink==19.0.0         # via jubeo
