@@ -60,11 +60,8 @@ def test_render(cx, context=None):
 
 @task(pre=[test_render])
 def test_rendered_repo(cx, default=True, context=None):
+    pass
 
-    print("Nothing to do...")
     # with cx.cd(target_dir):
-    #     pass
 
-
-
-
+    #     cx.run()
