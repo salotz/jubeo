@@ -259,7 +259,7 @@ def tests_nox(cx):
 ### Code & Test Quality
 
 @task
-def coverage(cx):
+def coverage_report(cx):
     cx.run("coverage report")
     cx.run("coverage html")
     cx.run("coverage xml")
