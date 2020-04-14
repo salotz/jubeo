@@ -295,7 +295,7 @@ def complexity(cx):
 
 @task
 def complexity_serve(cx):
-    cx.run("python -m http.server -d reports/coverage/html 8021",
+    cx.run("python -m http.server -d reports/conde_quality/lizard.html 8021",
            asynchronous=True)
 
 @task(pre=[coverage_report, complexity, lint])
