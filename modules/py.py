@@ -179,7 +179,7 @@ def docs_build(cx):
 @task(pre=[docs_build])
 def docs_serve(cx):
     """Local server for documenation"""
-    cx.run("python -m http.server -d sphinx/_build/html")
+    cx.run("python -m http.server -d sphinx/_build/html 8022")
 
 ### TODO: WIP Website
 
@@ -277,7 +277,8 @@ def lint(cx):
     cx.run(f"mkdir -p {REPORTS_DIR}/lint")
 
     cx.run(f"rm -f {REPORTS_DIR}/lint/flake8.txt")
-    cx.run(f"flake8 --output-file={REPORTS_DIR}/lint/flake8.txt src/{project_slug()}")
+    cx.run(f"flake8 --output-file={REPORTS_DIR}/lint/flake8.txt src/{project_slug()}",
+           warn=True)
 
 @task
 def complexity(cx):
@@ -285,8 +286,10 @@ def complexity(cx):
 
     cx.run(f"mkdir -p {REPORTS_DIR}/code_quality")
 
-    cx.run(f"lizard -o {REPORTS_DIR}/code_quality/lizard.csv src/{project_slug()}")
-    cx.run(f"lizard -o {REPORTS_DIR}/code_quality/lizard.html src/{project_slug()}")
+    cx.run(f"lizard -o {REPORTS_DIR}/code_quality/lizard.csv src/{project_slug()}",
+           warn=True)
+    cx.run(f"lizard -o {REPORTS_DIR}/code_quality/lizard.html src/{project_slug()}",
+           warn=True)
 
     # SNIPPET: annoyingly opens the browser
 
