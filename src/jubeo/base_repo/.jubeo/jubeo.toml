@@ -6,7 +6,12 @@
 # section (after the #) for the path within the repo
 upstream_url = "git+https://github.com/salotz/jubeo.git#src/jubeo/base_repo"
 
-[taskset]
 
+[modules]
+
+source_url = "git+https://github.com/salotz/jubeo.git#src/jubeo/base_repo"
+modules = []
+
+[taskset]
 dirname = "tasks"
 

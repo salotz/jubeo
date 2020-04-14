@@ -92,9 +92,23 @@ def clean_cache():
 @click.option("--force/--no-force", default=False)
 @click.option("--taskset-name", default="tasks")
 @click.option('--upstream', type=str, default=None)
+@click.option("--base-repo", is_flag=True, default=False,
+              help="Choose to initialize with the base repo in jubeo source code."
+              "Otherwise use the jubeo project config if it exists.")
 @click.argument('project-dir', type=click.Path(exists=True))
-def init(force, taskset_name, upstream, project_dir):
-    """Initialize a project task-set."""
+def init(force, taskset_name, upstream, base_repo, project_dir):
+    """Initialize a project task-set.
+
+    If the '--upstream' option is not given will look to whether the
+    '--base-repo' flag is on.
+
+    If the '--base-repo' flag is on, jubeo will always initialize this
+    directory with the 'base_repo' configuration which is included in
+    the jubeo source code. Otherwise if a '.jubeo/jubeo.toml' file is
+    present in the project this will be used. If it doesn't exist then
+    the 'base_repo' will be used.
+
+    """
 
     _clean_cache()
 
@@ -104,17 +118,35 @@ def init(force, taskset_name, upstream, project_dir):
 
     cache_path = Path(osp.expanduser(osp.expandvars(config['cache']['path'])))
 
-    # get the upstream repo we are retrieving from, downloading if
-    # necessary
-    if upstream is None:
-        upstream_url = URL.from_text(str(base_repo_path()))
-    else:
-        upstream_url = URL.from_text(upstream)
-
+    # see if the project has a config, and load it if there is
     try:
         proj_config = load_proj_config(project_dir)
     except FileNotFoundError:
         proj_config = None
+
+    # get the upstream repo we are retrieving from, downloading if
+    # necessary
+    if upstream is None:
+
+        # if base_repo option not on and this project has a config
+        # load this config
+
+        if (not base_repo and
+            proj_config is not None):
+
+            # read the upstream URL from the config
+            upstream_url = URL.from_text(osp.expandvars(osp.expanduser(
+                proj_config['upstream_url'])))
+
+
+        # fall back to base_repo if everything else failed
+        if base_repo:
+            upstream_url = URL.from_text(str(base_repo_path()))
+
+
+    else:
+        upstream_url = URL.from_text(upstream)
+
 
     # then we can simply copy from this downloaded repo
     source_repo_path = Path(retrieve_upstream(
