@@ -218,14 +218,12 @@ def tests_benchmarks(cx):
 @task
 def tests_integration(cx):
     with cx.cd("tests/tests/test_integration"):
-        cx.run("pwd")
         cx.run(f"pytest -m 'not interactive'",
                warn=True)
 
 @task
 def tests_unit(cx):
     with cx.cd("tests/tests/test_unit"):
-        cx.run("pwd")
         cx.run(f"pytest -m 'not interactive'",
                warn=True)
 
