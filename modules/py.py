@@ -264,6 +264,9 @@ def tests_nox(cx):
 @task
 def coverage(cx):
     cx.run("coverage report")
+    cx.run("coverage html")
+    cx.run("coverage xml")
+    cx.run("coverage json")
 
 @task
 def lint(cx):
