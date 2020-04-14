@@ -56,7 +56,10 @@ def project_slug():
 def init(cx):
 
     # install the versioneer files
-    cx.run("versioneer install")
+
+    # this always exits in an annoying way so we just warn here.
+    cx.run("versioneer install",
+           warn=True)
 
 @task
 def clean_dist(cx):
