@@ -9,6 +9,24 @@ See the git commit log history for full details.
 
 ** Unreleased
 
+** [0.0.3a0.dev0] - 2020-04-13
+
+*** Growth
+
+**** ~jubeo init~ improvements
+
+The ~jubeo init~ command now allows you to specify whether you want to
+pull from the 'base_repo' in the jubeo source code. Otherwise you can
+run from an initial ~.jubeo/jubeo.toml~ file in the repo if it exists.
+
+This works well with cookiecutter like tools that provide a starter
+config so you don't even have to specify the upstream url at init time.
+
+**** 'base_repo' update
+
+The ~jubeo.toml~ in the 'base_repo' had fallen behind the updates
+which were all done to the actual repos. It is now up to date.
+
 ** [0.0.2a0.dev0] - 2020-03-20
 
 Bug fix release:
