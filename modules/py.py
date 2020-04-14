@@ -211,21 +211,18 @@ def website_deploy(cx):
 
 @task
 def tests_benchmarks(cx):
-    with cx.cd("tests/tests/test_benchmarks"):
-        cx.run("pytest -m 'not interactive'",
-               warn=True)
+    cx.run("pytest -m 'not interactive' tests/tests/test_benchmarks",
+           warn=True)
 
 @task
 def tests_integration(cx):
-    with cx.cd("tests/tests/test_integration"):
-        cx.run(f"coverage run -m pytest -m 'not interactive'",
-               warn=True)
+    cx.run(f"coverage run -m pytest -m 'not interactive' tests/tests/test_integration",
+           warn=True)
 
 @task
 def tests_unit(cx):
-    with cx.cd("tests/tests/test_unit"):
-        cx.run(f"coverage run -m pytest -m 'not interactive'",
-               warn=True)
+    cx.run(f"coverage run -m pytest -m 'not interactive' tests/tests/test_unit",
+           warn=True)
 
 @task
 def tests_interactive(cx):
@@ -267,6 +264,11 @@ def coverage(cx):
     cx.run("coverage html")
     cx.run("coverage xml")
     cx.run("coverage json")
+
+@task
+def coverage_serve(cx):
+    cx.run("python -m http.server -d reports/coverage/html")
+
 
 @task
 def lint(cx):
