@@ -53,6 +53,12 @@ def project_slug():
         return PROJECT_SLUG
 
 @task
+def init(cx):
+
+    # install the versioneer files
+    cx.run("versioneer install")
+
+@task
 def clean_dist(cx):
     """Remove all build products."""
 
@@ -202,20 +208,22 @@ def website_deploy(cx):
 
 @task
 def tests_benchmarks(cx):
-    cx.run("(cd tests/tests/test_benchmarks && pytest -m 'not interactive')")
+    with cx.cd("tests/tests/test_benchmarks"):
+        cx.run("pytest -m 'not interactive'")
 
 @task
 def tests_integration(cx):
-    cx.run(f"(cd tests/tests/test_integration && pytest -m 'not interactive')")
+    with cx.cd("tests/tests/test_integration"):
+        cx.run(f"pytest -m 'not interactive'")
 
 @task
 def tests_unit(cx):
-    cx.run(f"(cd tests/tests/test_unit && pytest -m 'not interactive')")
+    with cx.cd("tests/tests/test_unit"):
+        cx.run(f"pytest -m 'not interactive'")
 
 @task
 def tests_interactive(cx):
     """Run the interactive tests so we can play with things."""
-
     cx.run("pytest -m 'interactive'")
 
 @task()
@@ -239,14 +247,9 @@ def tests_all(cx):
     tests_integration(cx)
 
 @task
-def tests_tox(cx):
+def tests_nox(cx):
 
     NotImplemented
-
-    TOX_PYTHON_DIR=None
-
-    cx.run("env PATH=\"{}/bin:$PATH\" tox".format(
-        TOX_PYTHON_DIR))
 
 ### Code Quality
 
