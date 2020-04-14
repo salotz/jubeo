@@ -25,3 +25,8 @@ INITIAL_VERSION = '0.0.0a0.dev0'
 GIT_LFS_TARGETS = []
 VERSION = '0.0.0a0.dev0'
 
+
+### Cookiecutter
+
+COOKIECUTTER_TEST_DIR = "_test_builds"
+

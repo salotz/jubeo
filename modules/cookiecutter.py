@@ -1,35 +1,70 @@
+import json
+from pathlib import Path
+
 from invoke import task
 
-#@task(pre=[clean])
+from ..config import (
+    COOKIECUTTER_TEST_DIR,
+)
+
+def render_from_json(
+        template_url,
+        settings_json,
+        target_path,
+):
+    from cookiecutter.main import cookiecutter
+
+    settings = json.loads(settings_json)
+
+    cookiecutter(
+        str(template_url),
+        extra_context=settings,
+        output_dir=target_path,
+        no_input=True,
+        overwrite_if_exists=True,
+    )
+
+
 @task
-def test_render(cx, default=True, context_file=None):
+def clean(cx):
 
-    cx.run("mkdir -p tests/_test_builds")
+    cx.run(f"rm -rf tests/{COOKIECUTTER_TEST_DIR}")
 
-    if default:
-        cx.run("cookiecutter -f --no-input -o tests/_test_builds/ .")
+@task(pre=[clean])
+def test_render(cx, context=None):
 
-    # read from a JSON file
-    elif context_file is not None:
-        assert osp.exists(context_file), f"context file {context_file} doesn't exist"
+    from cookiecutter.main import cookiecutter
 
-        cx.run(f"cookiecutter -f --no-input -o tests/_test_builds/ . {context}")
+    # make sure the test dir exists
+    cx.run(f"mkdir -p tests/{COOKIECUTTER_TEST_DIR}")
 
-    # otherwise do interactively
+    template_url = Path(".")
+
+    if context is None:
+
+        context_json = json.dumps({})
+        output_dir = Path('tests') / COOKIECUTTER_TEST_DIR
+
     else:
-        cx.run("cookiecutter -f -o tests/_test_builds/ .")
 
+        # the path to the context JSON file
+        context_path = Path(f"tests/test_contexts/{context}.json")
+        context_json = context_path.read_text()
+        output_dir = Path('tests') / COOKIECUTTER_TEST_DIR
+
+    render_from_json(
+        template_url,
+        context_json,
+        output_dir,
+        )
 
 @task(pre=[test_render])
 def test_rendered_repo(cx, default=True, context=None):
 
-    default_name = "default_repo_name"
-    target_dir = f'tests/_test_builds/{default_name}'
+    print("Nothing to do...")
+    # with cx.cd(target_dir):
+    #     pass
 
-    with cx.cd(target_dir):
 
-        print("testing the generated repo is okay")
-        print(f"cd {target_dir}")
-        cx.run("inv repo-test", echo=True)
 
 
