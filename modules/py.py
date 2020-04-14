@@ -292,7 +292,7 @@ def complexity(cx):
     # make a cute word cloud of the things used
     # cx.run(f"(cd {REPORTS_DIR}/code_quality; lizard -EWordCount src/project_slug() > /dev/null)")
 
-@task(pre=[complexity, lint])
+@task(pre=[coverage_report, complexity, lint])
 def quality(cx):
     pass
 
