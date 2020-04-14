@@ -267,7 +267,8 @@ def coverage_report(cx):
 
 @task
 def coverage_serve(cx):
-    cx.run("python -m http.server -d reports/coverage/html")
+    cx.run("python -m http.server -d reports/coverage/html 8020",
+           asynchronous=True)
 
 
 @task
@@ -292,8 +293,17 @@ def complexity(cx):
     # make a cute word cloud of the things used
     # cx.run(f"(cd {REPORTS_DIR}/code_quality; lizard -EWordCount src/project_slug() > /dev/null)")
 
+@task
+def complexity_serve(cx):
+    cx.run("python -m http.server -d reports/coverage/html 8021",
+           asynchronous=True)
+
 @task(pre=[coverage_report, complexity, lint])
 def quality(cx):
+    pass
+
+@task(pre=[coverage_serve, complexity_serve])
+def quality_serve(cx):
     pass
 
 
