@@ -212,22 +212,26 @@ def website_deploy(cx):
 @task
 def tests_benchmarks(cx):
     with cx.cd("tests/tests/test_benchmarks"):
-        cx.run("pytest -m 'not interactive'")
+        cx.run("pytest -m 'not interactive'",
+               warn=True)
 
 @task
 def tests_integration(cx):
     with cx.cd("tests/tests/test_integration"):
-        cx.run(f"pytest -m 'not interactive'")
+        cx.run(f"pytest -m 'not interactive'",
+               warn=True)
 
 @task
 def tests_unit(cx):
     with cx.cd("tests/tests/test_unit"):
-        cx.run(f"pytest -m 'not interactive'")
+        cx.run(f"pytest -m 'not interactive'",
+               warn=True)
 
 @task
 def tests_interactive(cx):
     """Run the interactive tests so we can play with things."""
-    cx.run("pytest -m 'interactive'")
+    cx.run("pytest -m 'interactive'",
+           warn=True)
 
 @task()
 def tests_all(cx):
