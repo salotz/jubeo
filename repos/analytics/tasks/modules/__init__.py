@@ -4,18 +4,20 @@ from . import core
 from . import clean
 from . import env
 from . import git
-from . import org
+from . import docs
 from . import py
 from . import cache
 from . import project
+from . import analytics
 
 MODULES = [
     core,
     clean,
     env,
     git,
-    org,
+    docs,
     py,
     cache,
     project,
+    analytics,
 ]
