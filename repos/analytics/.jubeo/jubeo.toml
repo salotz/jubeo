@@ -21,12 +21,13 @@ modules = [
     'clean',
     'env',
     'git',
-    'org',
+    'docs',
     'py',
 
     # specific to computational things
     'cache',
-    'project',    
+    'project',
+    'analytics',
 ]
 
 [taskset]
