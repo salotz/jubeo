@@ -211,17 +211,17 @@ def website_deploy(cx):
 
 @task
 def tests_benchmarks(cx):
-    cx.run("pytest -m 'not interactive' tests/tests/test_benchmarks",
+    cx.run("pytest -m 'not interactive' tests/test_benchmarks",
            warn=True)
 
 @task
 def tests_integration(cx):
-    cx.run(f"coverage run -m pytest -m 'not interactive' tests/tests/test_integration",
+    cx.run(f"coverage run -m pytest -m 'not interactive' tests/test_integration",
            warn=True)
 
 @task
 def tests_unit(cx):
-    cx.run(f"coverage run -m pytest -m 'not interactive' tests/tests/test_unit",
+    cx.run(f"coverage run -m pytest -m 'not interactive' tests/test_unit",
            warn=True)
 
 @task
@@ -320,7 +320,7 @@ def profile(cx):
 def benchmark_adhoc(cx):
     """An ad hoc benchmark that will not be saved."""
 
-    cx.run("pytest tests/tests/test_benchmarks")
+    cx.run("pytest tests/test_benchmarks")
 
 @task
 def benchmark_save(cx):
@@ -329,7 +329,7 @@ def benchmark_save(cx):
     run_command = \
 f"""pytest --benchmark-autosave --benchmark-save-data \
           --benchmark-storage={BENCHMARK_STORAGE_URI} \
-          tests/tests/test_benchmarks
+          tests/test_benchmarks
 """
 
     cx.run(run_command)
