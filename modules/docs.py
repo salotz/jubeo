@@ -10,7 +10,9 @@ from warnings import warn
 
 ## Paths for the different things
 
-DOCS_TEST_DIR = "tests/tests/test_docs/_tangled_docs"
+DOCS_TEST_DIR = "tests/test_docs/_tangled_docs"
+DOCS_EXAMPLES_DIR = "tests/test_docs/_examples"
+DOCS_TUTORIALS_DIR = "tests/test_docs/_tutorials"
 
 DOCS_SPEC = {
     'LANDING_PAGE' : "README.org",
@@ -138,46 +140,11 @@ def visit_docs():
 
     return page_paths
 
-# TODO
-def visit_tutorials(cwd):
-
-    tutorials = [tut for tut in os.listdir(cwd / DOCS_SPEC['TUTORIALS_DIR'])
-                 if (
-                         tut != Path(DOCS_SPEC['TUTORIALS_LISTING_INDEX']).parts[-1] and
-                         tut != 'index.rst' and
-                         tut != '.keep' and
-                         not tut.endswith("~")
-                 )
-    ]
-
-    for tutorial in tutorials:
-        tutorial_dir = cwd / DOCS_SPEC['TUTORIALS_DIR'] / tutorial
-        tutorial_pages = []
-
-        index_pages = []
-        for poss_index in DOCS_SPEC['TUTORIAL_INDEX']:
-
-            if osp.exists(poss_index):
-                tutorial_index = tutorial_dir / poss_index
-                tutorial_pages.append(tutorial_index)
-
-        if len(index_pages) > 1:
-            warn(f"Multiple index pages exist for {tutorial}, choosing {index_pages[0]}")
-
-        elif len(index_pages) < 1:
-            warn(f"No tutorial index page for {tutorial}")
-
-        else:
-            tutorial_pages.append(index_pages[0])
-
-        page_paths.extend(tutorial_pages)
-
-
-# TODO
-def visit_examples(cwd):
+def visit_examples():
+    """Get the relative paths to all of the example dirs."""
 
     # get the pages for the tutorials and examples
-    examples = [ex for ex in os.listdir(cwd / DOCS_SPEC['EXAMPLES_DIR'])
+    examples = [ex for ex in os.listdir(DOCS_SPEC['EXAMPLES_DIR'])
                 if (
                         ex != Path(DOCS_SPEC['EXAMPLES_LISTING_INDEX']).parts[-1] and
                         ex != '.keep' and
@@ -185,8 +152,11 @@ def visit_examples(cwd):
                 )
     ]
 
-    for example in examples:
-        example_dir = cwd / DOCS_SPEC['EXAMPLES_DIR'] / example
+    example_dirs = [Path(DOCS_SPEC['EXAMPLES_DIR']) / example for example in examples]
+
+    return example_dirs
+
+def visit_example_contents(example):
 
         example_pages = []
         if osp.exists(DOCS_SPEC['EXAMPLE_INDEX']):
@@ -197,6 +167,59 @@ def visit_examples(cwd):
 
         page_paths.extend(example_pages)
 
+def visit_tutorials():
+    """Get the relative paths to all of the tutorial dirs."""
+
+    # get the pages for the tutorials and tutorials
+    tutorials = [tut for tut in os.listdir(DOCS_SPEC['TUTORIALS_DIR'])
+                if (
+                        tut != Path(DOCS_SPEC['TUTORIALS_LISTING_INDEX']).parts[-1] and
+                        tut != 'index.rst' and
+                        tut != '.keep' and
+                        not tut.endswith("~")
+                )
+    ]
+
+    tutorial_dirs = [Path(DOCS_SPEC['TUTORIALS_DIR']) / tutorial for tutorial in tutorials]
+
+    return tutorial_dirs
+
+# # TODO
+# def visit_tutorials(cwd):
+
+#     tutorials = [tut for tut in os.listdir(cwd / DOCS_SPEC['TUTORIALS_DIR'])
+#                  if (
+#                          tut != Path(DOCS_SPEC['TUTORIALS_LISTING_INDEX']).parts[-1] and
+#                          tut != 'index.rst' and
+#                          tut != '.keep' and
+#                          not tut.endswith("~")
+#                  )
+#     ]
+
+#     for tutorial in tutorials:
+#         tutorial_dir = cwd / DOCS_SPEC['TUTORIALS_DIR'] / tutorial
+#         tutorial_pages = []
+
+#         index_pages = []
+#         for poss_index in DOCS_SPEC['TUTORIAL_INDEX']:
+
+#             if osp.exists(poss_index):
+#                 tutorial_index = tutorial_dir / poss_index
+#                 tutorial_pages.append(tutorial_index)
+
+#         if len(index_pages) > 1:
+#             warn(f"Multiple index pages exist for {tutorial}, choosing {index_pages[0]}")
+
+#         elif len(index_pages) < 1:
+#             warn(f"No tutorial index page for {tutorial}")
+
+#         else:
+#             tutorial_pages.append(index_pages[0])
+
+#         page_paths.extend(tutorial_pages)
+
+
+
 
 def tangle_orgfile(cx, file_path):
     """Tangle the target file using emacs in batch mode. Implicitly dumps
@@ -204,23 +227,48 @@ def tangle_orgfile(cx, file_path):
 
     cx.run(f"emacs -Q --batch -l org {file_path} -f org-babel-tangle")
 
+def tangle_jupyter(cx, file_path):
+    """Tangle the target file using emacs in batch mode. Implicitly dumps
+    things relative to the file."""
+
+    print("Jupyter tangling not implemented")
+
+
+
 @task
 def list_docs(cx):
     """List paths relative to this context"""
 
     print('\n'.join([str(Path(cx.cwd) / p) for p in visit_docs()]))
 
+@task
+def list_examples(cx):
+    """List paths relative to this context"""
 
+    print('\n'.join([str(Path(cx.cwd) / ex) for ex in visit_examples()]))
 
 @task
-def clean_tangle(cx):
+def list_tutorials(cx):
+    """List paths relative to this context"""
 
-    # remove the tangle dir
+    print('\n'.join([str(Path(cx.cwd) / tut) for tut in visit_tutorials()]))
+
+@task()
+def clean_tangle(cx):
+    """remove the tangle dirs"""
+
     sh.rmtree(Path(cx.cwd) / DOCS_TEST_DIR,
               ignore_errors=True)
 
+    sh.rmtree(Path(cx.cwd) / DOCS_EXAMPLES_DIR,
+              ignore_errors=True)
+
+    sh.rmtree(Path(cx.cwd) / DOCS_TUTORIALS_DIR,
+              ignore_errors=True)
+
+
 @task(pre=[clean_tangle])
-def tangle(cx):
+def tangle_pages(cx):
     """Tangle the docs into the docs testing directory."""
 
     docs_test_dir = Path(cx.cwd) / DOCS_TEST_DIR
@@ -251,6 +299,104 @@ def tangle(cx):
 
         # then tangle them
         tangle_orgfile(cx, target_orgfile)
+
+@task(pre=[clean_tangle])
+def tangle_examples(cx):
+
+    examples_test_dir = Path(cx.cwd) / DOCS_EXAMPLES_DIR
+
+    os.makedirs(
+        examples_test_dir,
+        exist_ok=True,
+    )
+
+    for example_dir in visit_examples():
+
+        example = example_dir.stem
+
+        # ignore if there are any built files at the start location,
+        # need to build fresh for tests
+        sh.copytree(
+            example_dir,
+            examples_test_dir / example,
+            dirs_exist_ok=False,
+            ignore=sh.ignore_patterns("_*"),
+        )
+
+        os.makedirs(
+            examples_test_dir / example / "_tangle_source",
+            )
+
+        os.makedirs(
+            examples_test_dir / example / "_output",
+            )
+
+        if (examples_test_dir / example / "README.org").is_file():
+            tangle_orgfile(
+                cx,
+                examples_test_dir / example / "README.org",
+            )
+
+        else:
+            warn(f"The README.org file does not exist for {example}. Not tangling.")
+
+
+
+@task(pre=[clean_tangle])
+def tangle_tutorials(cx):
+
+    tutorials_test_dir = Path(cx.cwd) / DOCS_TUTORIALS_DIR
+
+    os.makedirs(
+        tutorials_test_dir,
+        exist_ok=True,
+    )
+
+    for tutorial_dir in visit_tutorials():
+
+        tutorial = tutorial_dir.stem
+
+        # ignore if there are any built files at the start location,
+        # need to build fresh for tests
+        sh.copytree(
+            tutorial_dir,
+            tutorials_test_dir / tutorial,
+            dirs_exist_ok=False,
+            ignore=sh.ignore_patterns("_*"),
+        )
+
+        os.makedirs(
+            tutorials_test_dir / tutorial / "_tangle_source",
+            )
+
+        os.makedirs(
+            tutorials_test_dir / tutorial / "_output",
+            )
+
+        if (tutorials_test_dir / tutorial / "README.org").is_file():
+            tangle_orgfile(
+                cx,
+                tutorials_test_dir / tutorial / "README.org",
+            )
+
+        elif (tutorials_test_dir / tutorial / "README.ipynb").is_file():
+            tangle_jupyter(
+                cx,
+                tutorials_test_dir / tutorial / "README.ipynb",
+            )
+
+        else:
+            warn(f"The README file does not exist for {tutorial}. Not tangling.")
+
+
+
+
+@task(pre=[clean_tangle, tangle_pages, tangle_examples, tangle_tutorials])
+def tangle(cx):
+    """Tangle the doc pages, examples, and tutorials into the docs testing
+    directories."""
+
+    pass
 
 
 @task()
