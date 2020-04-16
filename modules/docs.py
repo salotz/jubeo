@@ -427,8 +427,12 @@ def new_tutorial(cx, name=None, template="org"):
 
 
 @task()
-def test(cx):
+def test(cx, tag=None):
 
-    cx.run("pytest tests/test_docs",
-           warn=True)
+    if tag is None:
+        cx.run("pytest tests/test_docs",
+               warn=True)
 
+    else:
+        cx.run("pytest --html=reports/pytest/{tag}/docs/report.html tests/test_docs",
+               warn=True)
