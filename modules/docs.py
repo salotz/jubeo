@@ -434,5 +434,5 @@ def test(cx, tag=None):
                warn=True)
 
     else:
-        cx.run("pytest --html=reports/pytest/{tag}/docs/report.html tests/test_docs",
+        cx.run(f"pytest --html=reports/pytest/{tag}/docs/report.html tests/test_docs",
                warn=True)
