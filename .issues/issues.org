@@ -60,7 +60,7 @@ code. Its a little hacky but it works.
 
 Should think about moving to something more robust like nox.
 
-** TODO 0002: Add support for nox in py                             :feature:
+** DONE 0002: Add support for nox in py                             :feature:
 
 
 Nox is a nice test runner like tox but it works like invoke. Its very
@@ -72,3 +72,43 @@ stuff with.
 
 Should integrate nicely with the invoke targets so we don't end up
 duplicating them all over the place.
+
+- [X] pyenv in general integration
+- [X] conda
+
+** TODO 0003: Add docs for file targets                             :feature:
+
+Add a feature where you can query about the current repository
+structure.
+
+First would be to just have consistency information about the
+structure in the repo.
+
+#+begin_src bash
+jubeo check .
+#+end_src
+
+Or have it for specific subdirectories:
+
+#+begin_src bash
+jubeo check info
+#+end_src
+
+And it will tell you:
+
+- if everything expected is there
+- if there are any extra things that are not explicitly ignored
+- if there are ignored things there
+- integrate with the doit cache to tell you about those things
+
+Also we want to have documentation for every file so can say:
+
+#+begin_src bash
+jubeo help README.org
+jubeo help info
+jubeo help tasks/config.py
+#+end_src
+
+And it will tell you about each thing if it knows about them.
+
+This can be useful in any context.

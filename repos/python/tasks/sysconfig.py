@@ -23,6 +23,20 @@ DEFAULT_ENV = 'dev'
 # directory where env specs are read from
 ENVS_DIR = 'envs'
 
+# Python version source, this is how we get the different python
+# versions. This is a keyword not a path
+PYTHON_VERSION_SOURCE = "pyenv"
+
+# which versions will be requested to be installed, in the order of
+# precendence for interactive work
+PYTHON_VERSIONS = (
+    '3.8.1',
+    '3.7.6',
+    '3.6.10',
+    'pypy3.6-7.3.0',
+)
+
+
 ### Git
 
 INITIAL_VERSION = '0.0.0a0.dev0'
@@ -55,3 +69,7 @@ RST_DOCS_SOURCES = [
 
 PYPIRC="$HOME/.pypirc"
 TESTING_PYPIRC="$HOME/.pypirc"
+
+# this is the name of the pyenv "version" to use for creating and
+# activating conda
+PYENV_CONDA_NAME = 'miniconda3-latest'

@@ -7,6 +7,7 @@ from ..config import (
     RST_DOCS_SOURCES,
     TESTING_PYPIRC,
     PYPIRC,
+    PYENV_CONDA_NAME,
 )
 
 import sys
@@ -36,6 +37,8 @@ from pathlib import Path
 # ]
 # PYPIRC = "$HOME/.pypirc"
 # TESTING_PYPIRC = "$HOME/.test-pypirc"
+
+# PYENV_CONDA_NAME = 'miniconda3-latest'
 
 ## CONSTANTS
 
@@ -253,7 +256,13 @@ def tests_all(cx):
 @task
 def tests_nox(cx):
 
-    NotImplemented
+    # run with base venv maker
+    with cx.prefix("unset PYENV_VERSION"):
+        cx.run("nox -s test_user")
+
+    # test running with conda
+    with cx.prefix(f"pyenv shell {PYENV_CONDA_NAME}"):
+        cx.run("nox -s test_user_conda")
 
 
 ### Code & Test Quality
