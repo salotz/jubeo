@@ -218,14 +218,26 @@ def tests_benchmarks(cx):
            warn=True)
 
 @task
-def tests_integration(cx):
-    cx.run(f"coverage run -m pytest -m 'not interactive' tests/test_integration",
-           warn=True)
+def tests_integration(cx, tag=None):
+
+    if tag is None:
+        cx.run(f"coverage run -m pytest -m 'not interactive' tests/test_integration",
+               warn=True)
+    else:
+        cx.run(f"coverage run -m pytest --html=reports/pytest/{tag}/integration/report.html -m 'not interactive' tests/test_integration",
+               warn=True)
+
 
 @task
-def tests_unit(cx):
-    cx.run(f"coverage run -m pytest -m 'not interactive' tests/test_unit",
-           warn=True)
+def tests_unit(cx, tag=None):
+
+    if tag is None:
+        cx.run(f"coverage run -m pytest -m 'not interactive' tests/test_unit",
+               warn=True)
+    else:
+        cx.run(f"coverage run -m pytest --html=reports/pytest/{tag}/unit/report.html -m 'not interactive' tests/test_unit",
+               warn=True)
+
 
 @task
 def tests_interactive(cx):
@@ -234,7 +246,7 @@ def tests_interactive(cx):
            warn=True)
 
 @task()
-def tests_all(cx):
+def tests_all(cx, tag=None):
     """Run all the automated tests. No benchmarks.
 
     There are different kinds of nodes that we can run on that
@@ -249,9 +261,8 @@ def tests_all(cx):
 
     """
 
-
-    tests_unit(cx)
-    tests_integration(cx)
+    tests_unit(cx, tag=tag)
+    tests_integration(cx, tag=tag)
 
 @task
 def tests_nox(cx):
