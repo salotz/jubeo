@@ -325,23 +325,9 @@ def tangle_examples(cx):
             ignore=sh.ignore_patterns("_*"),
         )
 
-        os.makedirs(
-            examples_test_dir / example / "_tangle_source",
-            )
-
-        os.makedirs(
-            examples_test_dir / example / "_output",
-            )
-
-        if (examples_test_dir / example / "README.org").is_file():
-            tangle_orgfile(
-                cx,
-                examples_test_dir / example / "README.org",
-            )
-
-        else:
-            warn(f"The README.org file does not exist for {example}. Not tangling.")
-
+        with cx.cd(str(examples_test_dir / example)):
+            cx.run("inv clean")
+            cx.run("inv tangle")
 
 
 @task(pre=[clean_tangle])
@@ -364,33 +350,12 @@ def tangle_tutorials(cx):
             tutorial_dir,
             tutorials_test_dir / tutorial,
             dirs_exist_ok=False,
-            ignore=sh.ignore_patterns("_*"),
         )
 
-        os.makedirs(
-            tutorials_test_dir / tutorial / "_tangle_source",
-            )
 
-        os.makedirs(
-            tutorials_test_dir / tutorial / "_output",
-            )
-
-        if (tutorials_test_dir / tutorial / "README.org").is_file():
-            tangle_orgfile(
-                cx,
-                tutorials_test_dir / tutorial / "README.org",
-            )
-
-        elif (tutorials_test_dir / tutorial / "README.ipynb").is_file():
-            tangle_jupyter(
-                cx,
-                tutorials_test_dir / tutorial / "README.ipynb",
-            )
-
-        else:
-            warn(f"The README file does not exist for {tutorial}. Not tangling.")
-
-
+        with cx.cd(str(tutorials_test_dir / tutorial)):
+            cx.run("inv clean")
+            cx.run("inv tangle")
 
 
 @task(pre=[clean_tangle, tangle_pages, tangle_examples, tangle_tutorials])
