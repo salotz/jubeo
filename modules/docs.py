@@ -228,11 +228,13 @@ def tangle_orgfile(cx, file_path):
     cx.run(f"emacs -Q --batch -l org {file_path} -f org-babel-tangle")
 
 def tangle_jupyter(cx, file_path):
-    """Tangle the target file using emacs in batch mode. Implicitly dumps
-    things relative to the file."""
+    """Tangle the target file using jupyter-nbconvert to a python
+    script. Implicitly dumps things relative to the file. Only can
+    make a single script from the notebook with the same name.
 
-    print("Jupyter tangling not implemented")
+    """
 
+    cx.run(f"jupyter-nbconvert --to 'python' {file_path}")
 
 
 @task
@@ -397,6 +399,66 @@ def tangle(cx):
     directories."""
 
     pass
+
+
+@task
+def new_example(cx, name=None, template="org"):
+    """Create a new example in the info/examples directory.
+
+    Can choose between the following templates:
+    - 'org' :: org mode notebook
+
+    """
+
+    assert name is not None, "Must provide a name"
+
+    template_path = Path(f"templates/examples/{template}")
+
+    # check if the template exists
+    if not template_path.is_dir():
+
+        raise ValueError(
+            f"Unkown template {template}. Check the 'templates/examples' folder")
+
+    target_path = Path(f"info/examples/{name}")
+
+    if target_path.exists():
+        raise FileExistsError(f"Example with name {name} already exists. Not overwriting.")
+
+    # copy the template
+    cx.run(f"cp -r {template_path} {target_path}")
+
+    print(f"New example created at: {target_path}")
+
+@task
+def new_tutorial(cx, name=None, template="org"):
+    """Create a new tutorial in the info/tutorials directory.
+
+    Can choose between the following templates:
+    - 'org' :: org mode notebook
+    - 'jupyter' :: Jupyter notebook
+
+    """
+
+    assert name is not None, "Must provide a name"
+
+    template_path = Path(f"templates/tutorials/{template}")
+
+    # check if the template exists
+    if not template_path.is_dir():
+
+        raise ValueError(
+            f"Unkown template {template}. Check the 'templates/tutorials' folder")
+
+    target_path = Path(f"info/tutorials/{name}")
+
+    if target_path.exists():
+        raise FileExistsError(f"Tutorial with name {name} already exists. Not overwriting.")
+
+    # copy the template
+    cx.run(f"cp -r {template_path} {target_path}")
+
+    print(f"New tutorial created at: {target_path}")
 
 
 @task()
