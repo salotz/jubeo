@@ -112,3 +112,8 @@ jubeo help tasks/config.py
 And it will tell you about each thing if it knows about them.
 
 This can be useful in any context.
+
+** TODO 0004: add reports for passing tests
+
+Would like to be able to have an HTML page that I can have like a big
+passing tests matrix to publish that isn't part of the CI.
