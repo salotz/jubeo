@@ -96,10 +96,10 @@ def get_current_pyversion():
 ## pip: things that can be controlled by pip
 
 def deps_pip_pin(cx,
-                 name=DEFAULT_ENV,
+                 path=None,
                  upgrade=False):
 
-    path = Path(ENVS_DIR) / name
+    assert path is not None
 
     # gather any development repos that are colocated on this machine
     # and solve the dependencies together
@@ -145,14 +145,16 @@ def deps_pip_pin(cx,
 
 ## conda: managing conda dependencies
 def deps_conda_pin(cx,
-                   name=DEFAULT_ENV,
+                   path=None,
                    upgrade=False,
                    optional=False,
 ):
 
     # STUB: currently upgrade does nothing
 
-    env_spec_path = Path(ENVS_DIR) / name
+    assert path is not None
+
+    env_spec_path = path
 
     if not optional:
         assert osp.exists(env_spec_path / CONDA_ABSTRACT_REQUIREMENTS), \
@@ -222,9 +224,10 @@ def deps_conda_pin(cx,
     print("--------------------------------------------------------------------------------")
     print(f"This is an automated process do not attempt to activate the '__mangled' environment")
 
-# altogether
-@task
-def deps_pin(cx, name=DEFAULT_ENV):
+def deps_pin_path(cx,
+                  path=None,
+                  upgrade=False):
+    """Pin an environment given by the path."""
 
     deps_pip_pin(cx,
                  name=name,
@@ -236,20 +239,27 @@ def deps_pin(cx, name=DEFAULT_ENV):
                        upgrade=False,
                        optional=True,)
 
+
+# altogether
+@task
+def deps_pin(cx, name=DEFAULT_ENV):
+    """Pin an environment in the 'envs' directory."""
+
+    path = Path(ENVS_DIR) / name
+
+    deps_pin_path(cx, path=path)
+
+
 @task
 def deps_pin_update(cx, name=DEFAULT_ENV):
+    """Update the pinned environment in the 'envs' directory."""
 
-    deps_pip_pin(cx,
-                    name=name,
-                    upgrade=True,
+    path = Path(ENVS_DIR) / name
+
+    deps_pin_path(cx,
+                  path=path,
+                  upgrade=True,
     )
-
-    if ENV_METHOD == 'conda':
-
-        deps_conda_pin(cx,
-                       name=name,
-                       optional=True,
-                       upgrade=True)
 
 
 ### Environments
