@@ -1,5 +1,4 @@
 from invoke import task
-import nox
 
 # from ..config import ()
 
