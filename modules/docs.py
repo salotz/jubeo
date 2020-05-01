@@ -408,15 +408,15 @@ def test_example(cx,
 
     for example in examples:
 
-        path = Path(DOCS_SPEC['EXAMPLES_DIR']) / example
+        path = example
 
         assert path.exists() and path.is_dir(), \
-            f"Example {example} doesn't exist"
+            f"Example {example.stem} doesn't exist at {path}"
 
         # TODO: add support for reports and such
         print("tag is ignored")
 
-        cx.run(f"pytest tests/test_docs/test_examples/test_{example}.py",
+        cx.run(f"pytest tests/test_docs/test_examples/test_{example.stem}.py",
                warn=True)
 
 @task
@@ -451,15 +451,15 @@ def test_tutorial(cx,
 
     for tutorial in tutorials:
 
-        path = Path(DOCS_SPEC['TUTORIALS_DIR']) / tutorial
+        path = tutorial
 
         assert path.exists() and path.is_dir(), \
-            f"Tutorial {tutorial} doesn't exist"
+            f"Tutorial {tutorial} doesn't exist at {path}"
 
         # TODO: add support for reports and such
         print("tag is ignored")
 
-        cx.run(f"pytest tests/test_docs/test_tutorials/test_{tutorial}.py",
+        cx.run(f"pytest tests/test_docs/test_tutorials/test_{tutorial.stem}.py",
                warn=True)
 
 @task
@@ -485,11 +485,11 @@ def test_pages(cx, tag=None):
     """Test the doc pages in the current virtual environment."""
 
     if tag is None:
-        cx.run("pytest tests/test_docs",
+        cx.run("pytest tests/test_docs/test_pages",
                warn=True)
 
     else:
-        cx.run(f"pytest --html=reports/pytest/{tag}/docs/report.html tests/test_docs",
+        cx.run(f"pytest --html=reports/pytest/{tag}/docs/report.html tests/test_docs/test_pages",
                warn=True)
 
 
