@@ -508,12 +508,13 @@ def pin_example(cx, name=None):
     else:
         examples = [name]
 
+    print(examples)
     for example in examples:
 
-        path = Path(DOCS_SPEC['EXAMPLES_DIR']) / example / 'env'
+        path = example / 'env'
 
         assert path.exists() and path.is_dir(), \
-            f"Example {name} doesn't exist"
+            f"Env for Example {example} doesn't exist"
 
         cx.run(f"inv env.deps-pin-path -p {path}")
 
@@ -527,10 +528,10 @@ def pin_tutorial(cx, name=None):
 
     for tutorial in tutorials:
 
-        path = Path(DOCS_SPEC['TUTORIALS_DIR']) / tutorial / 'env'
+        path = tutorial / 'env'
 
         assert path.exists() and path.is_dir(), \
-            f"Tutorial {name} doesn't exist"
+            f"Env for Tutorial {tutorial} doesn't exist"
 
         cx.run(f"inv env.deps-pin-path -p {path}")
 
