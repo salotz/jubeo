@@ -46,7 +46,7 @@ import shutil as sh
 ## CONSTANTS
 
 
-BENCHMARK_STORAGE_URI="\"file://{REPORTS_DIR}/benchmarks\""
+BENCHMARK_STORAGE_URI = f"\"file://{REPORTS_DIR}/benchmarks\""
 
 
 def project_slug():
