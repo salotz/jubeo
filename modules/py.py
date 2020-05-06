@@ -374,8 +374,8 @@ def env_jig(cx, name=None):
     if name is None:
         raise ValueError("Must specify which jig to use")
 
-    spec_path = 'jigs' / name / 'env'
-    env_path = 'jigs' / name / '_env'
+    spec_path = Path('jigs') / name / 'env'
+    env_path = Path('jigs') / name / '_env'
 
     assert spec_path.exists() and spec_path.is_dir(), \
         f"Jig {name} doesn't exist"
