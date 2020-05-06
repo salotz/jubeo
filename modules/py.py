@@ -366,6 +366,16 @@ def new_jig(cx, name=None, template="org"):
 
     print(f"New example created at: {target_path}")
 
+@task
+def pin_jig(cx, name=None):
+    """Pin the deps for an example or all of them if 'name' is None."""
+
+    path = Path('jigs') / name / 'env'
+
+    assert path.exists() and path.is_dir(), \
+        f"Env for Jig {name} doesn't exist"
+
+    cx.run(f"inv env.deps-pin-path -p {path}")
 
 @task
 def env_jig(cx, name=None):
