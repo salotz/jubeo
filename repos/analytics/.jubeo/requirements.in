@@ -2,3 +2,6 @@ jubeo
 invoke
 pip-tools
 joblib
+
+lxdock
+fabric

@@ -23,6 +23,7 @@ modules = [
     'git',
     'docs',
     'py',
+    'lxd',
 
     # specific to computational things
     'cache',
