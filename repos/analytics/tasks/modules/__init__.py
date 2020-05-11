@@ -6,6 +6,8 @@ from . import env
 from . import git
 from . import docs
 from . import py
+from . import lxd
+
 from . import cache
 from . import project
 from . import analytics
@@ -17,6 +19,7 @@ MODULES = [
     git,
     docs,
     py,
+    lxd,
     cache,
     project,
     analytics,
