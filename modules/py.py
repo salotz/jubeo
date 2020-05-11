@@ -471,6 +471,14 @@ def tests_nox(cx):
 ### Code & Test Quality
 
 @task
+def docstrings_report(cx):
+
+    cx.run("mkdir -p reports/docstring_coverage")
+    cx.run("interrogate -o reports/docstring_coverage/src.interrogate.txt -vv src")
+
+    # TODO add it for tests and docs etc.
+
+@task
 def coverage_report(cx):
     # cx.run("coverage report")
     cx.run("coverage xml -o reports/coverage/coverage.xml",
