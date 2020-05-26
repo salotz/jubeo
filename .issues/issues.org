@@ -117,3 +117,35 @@ This can be useful in any context.
 
 Would like to be able to have an HTML page that I can have like a big
 passing tests matrix to publish that isn't part of the CI.
+** TODO 0005: user modules & plugins
+
+Now I have a directory of "plugins" where users can write their own
+modules in each project.
+
+I also am running into the issue where I want to install plugins for a
+project that I don't want every project from a repo to have.
+
+For instance it should be optional to have lxd as a module in a python
+project.
+
+I started this as "user_modules" where you can have it install
+different modules not specified by the upstream repo.
+
+This will help with maintaining repos and keeping them focused and
+incremental.
+
+I have put this feature into the python repo, but I want this to be
+across all of the repos.
+
+(perhaps there should be a single template for the ~__init__.py~ and
+other such things that repos share see [[*0006: single template for `tasks/__init__.py`][0006]]).
+
+While I am doing this though I want to rename "plugins" to user
+modules since users are making them, and I want to rename
+"user_modules" to plugins, since you download and plugin.
+
+** TODO 0006: single template for `tasks/__init__.py`
+
+This should be the same across all repos. Make it so.
+    
+    
