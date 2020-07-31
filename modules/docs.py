@@ -318,6 +318,7 @@ def tangle_tutorials(cx):
         sh.copytree(
             tutorial_dir,
             tutorials_test_dir / tutorial,
+            ignore=sh.ignore_patterns("_*"),
         )
 
 
