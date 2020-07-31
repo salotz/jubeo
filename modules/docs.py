@@ -25,7 +25,9 @@ DOCS_SPEC = {
     'HOWTOS' : "info/howtos.org",
     'REFERENCE' : "info/reference.org",
     'TROUBLESHOOTING' : "info/troubleshooting.org",
+
     'GLOSSARY' : "info/glossary.rst",
+    'BIBLIOGRAPHY' : "info/docs.bib",
 
     'DEV_GUIDE' : "info/dev_guide.org",
     'GENERAL' : "info/general_info.org",
