@@ -69,7 +69,7 @@ PIP_COMPILED_REQUIREMENTS = 'requirements.txt'
 
 # conda specific
 CONDA_ABSTRACT_REQUIREMENTS = 'env.yaml'
-CONDA_COMPILED_REQUIREMENTS = 'env.yaml'
+CONDA_COMPILED_REQUIREMENTS = 'env.pinned.yaml'
 
 ### Util
 
@@ -240,10 +240,13 @@ def deps_pin_path(cx,
                  upgrade=False)
 
     if ENV_METHOD == 'conda':
-        deps_conda_pin(cx,
-                       path=path,
-                       upgrade=False,
-                       optional=True,)
+
+        # WKRD, FIXME: disabled for now since the end result isn't useful anymore
+        pass
+        # deps_conda_pin(cx,
+        #                path=path,
+        #                upgrade=False,
+        #                optional=True,)
 
 
 # altogether
@@ -315,20 +318,24 @@ def conda_env(cx,
 
         # install the conda dependencies. choose a specification file
         # based on these priorities of most pinned to least frozen.
-        if osp.exists(env_spec_path / CONDA_COMPILED_REQUIREMENTS):
 
-            cx.run(f"conda env update "
-                   f"--prefix {env_dir} "
-                   f"--file {env_spec_path}/{CONDA_COMPILED_REQUIREMENTS}")
+        # WKRD, FIXME: this is disabled because this is super-platform
+        # dependent and not reliable
+        #
+        # if osp.exists(env_spec_path / CONDA_COMPILED_REQUIREMENTS):
+        #     cx.run(f"conda env update "
+        #            f"--prefix {env_dir} "
+        #            f"--file {env_spec_path}/{CONDA_COMPILED_REQUIREMENTS}")
 
 
-        elif osp.exists(env_spec_path / CONDA_ABSTRACT_REQUIREMENTS):
+        if osp.exists(env_spec_path / CONDA_ABSTRACT_REQUIREMENTS):
 
             cx.run(f"conda env update "
                    f"--prefix {env_dir} "
                    f"--file {env_spec_path}/{CONDA_ABSTRACT_REQUIREMENTS}")
 
         else:
+            print("No conda dependencies specified")
             # don't do a conda env pin
             pass
 
