@@ -24,6 +24,7 @@ modules = [
     'docs',
     'py',
     'lxd',
+    'containers'
 
     # specific to computational things
     'cache',
