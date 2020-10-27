@@ -10,19 +10,19 @@ cffi==1.14.0              # via bcrypt, cryptography, pynacl
 chardet==3.0.4            # via requests
 click==7.1.2              # via jubeo, pip-tools
 colorlog==2.10.0          # via lxdock
-cryptography==2.9.2       # via paramiko, pylxd
-fabric==2.5.0             # via -r repos/analytics/.jubeo/requirements.in
+cryptography==3.2         # via paramiko, pylxd
+fabric==2.5.0             # via -r requirements.in
 gitdb==4.0.5              # via gitpython
 gitpython==3.1.2          # via jubeo
 hyperlink==19.0.0         # via jubeo
 idna==2.9                 # via hyperlink, requests
-invoke==1.4.1             # via -r repos/analytics/.jubeo/requirements.in, fabric
-joblib==0.14.1            # via -r repos/analytics/.jubeo/requirements.in
-jubeo==0.0.3a0.dev0       # via -r repos/analytics/.jubeo/requirements.in
-lxdock==0.4.1             # via -r repos/analytics/.jubeo/requirements.in
+invoke==1.4.1             # via -r requirements.in, fabric
+joblib==0.14.1            # via -r requirements.in
+jubeo==0.0.3a0.dev0       # via -r requirements.in
+lxdock==0.4.1             # via -r requirements.in
 paramiko==2.7.1           # via fabric
 pbr==5.4.5                # via pylxd
-pip-tools==5.1.2          # via -r repos/analytics/.jubeo/requirements.in
+pip-tools==5.1.2          # via -r requirements.in
 pycparser==2.20           # via cffi
 pylxd==2.2.10             # via lxdock
 pynacl==1.3.0             # via paramiko
