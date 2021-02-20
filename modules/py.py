@@ -179,7 +179,19 @@ def docs_build(cx):
 
     # copy the plain RST files over to the sources
     for source in RST_DOCS_SOURCES:
-        cx.run(f"cp info/{source}.rst sphinx/_source/{source}.rst")
+
+        source_path = Path('info') / source
+
+        # glob expand if it is a directory
+        if source_path.is_dir():
+            sources = [path.stem for path in source_path.glob("*.rst")]
+        else:
+            sources = [source]
+            targets = [source]
+
+        for source, target in zip(sources, targets):
+
+            cx.run(f"cp info/{source}.rst sphinx/_source/{target}.rst")
 
     # copy the Bibtex files over
     for source in BIB_DOCS_SOURCES:
@@ -188,14 +200,30 @@ def docs_build(cx):
     # convert the org mode to rst in the source folder
     for source in ORG_DOCS_SOURCES:
 
-        # name it the same
-        target = source
+        source_dir = Path("info")
+        target_dir = Path("sphinx/_source")
 
-        cx.run("pandoc "
-               "-f org "
-               "-t rst "
-               f"-o sphinx/_source/{target}.rst "
-               f"info/{source}.org")
+        source_path = source_dir / source
+
+        # glob expand if it is a directory
+        if source_path.is_dir():
+            sources = [f"{source}/{path.stem}" for path in source_path.glob("*.org")]
+            targets = sources
+
+            # also make sure the directory exists at the target
+            os.makedirs(target_dir / source,
+                        exist_ok=True)
+        else:
+            sources = [source]
+            targets = sources
+
+        for source, target in zip(sources, targets):
+
+            cx.run("pandoc "
+                   "-f org "
+                   "-t rst "
+                   f"-o {target_dir}/{target}.rst "
+                   f"{source_dir}/{source}.org")
 
     ## Examples
 
@@ -303,10 +331,6 @@ def docs_build(cx):
             coverage_pages,
             "sphinx/_build/html/coverage"
         )
-
-
-
-
 
 @task(pre=[docs_build])
 def docs_serve(cx):
