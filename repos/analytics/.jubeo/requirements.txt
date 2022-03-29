@@ -4,40 +4,97 @@
 #
 #    pip-compile --output-file=repos/analytics/.jubeo/requirements.txt repos/analytics/.jubeo/requirements.in
 #
-bcrypt==3.1.7             # via paramiko
-certifi==2020.4.5.1       # via requests
-cffi==1.14.0              # via bcrypt, cryptography, pynacl
-chardet==3.0.4            # via requests
-click==7.1.2              # via jubeo, pip-tools
-colorlog==2.10.0          # via lxdock
-cryptography==2.9.2       # via paramiko, pylxd
-fabric==2.5.0             # via -r repos/analytics/.jubeo/requirements.in
-gitdb==4.0.5              # via gitpython
-gitpython==3.1.2          # via jubeo
-hyperlink==19.0.0         # via jubeo
-idna==2.9                 # via hyperlink, requests
-invoke==1.4.1             # via -r repos/analytics/.jubeo/requirements.in, fabric
-joblib==0.14.1            # via -r repos/analytics/.jubeo/requirements.in
-jubeo==0.0.3a0.dev0       # via -r repos/analytics/.jubeo/requirements.in
-lxdock==0.4.1             # via -r repos/analytics/.jubeo/requirements.in
-paramiko==2.7.1           # via fabric
-pbr==5.4.5                # via pylxd
-pip-tools==5.1.2          # via -r repos/analytics/.jubeo/requirements.in
-pycparser==2.20           # via cffi
-pylxd==2.2.10             # via lxdock
-pynacl==1.3.0             # via paramiko
-python-dateutil==2.8.1    # via pylxd
-python-dotenv==0.13.0     # via lxdock
-pyyaml==3.13              # via lxdock
-requests-toolbelt==0.9.1  # via pylxd
-requests-unixsocket==0.2.0  # via pylxd
-requests==2.23.0          # via pylxd, requests-toolbelt, requests-unixsocket
-six==1.14.0               # via bcrypt, cryptography, pip-tools, pylxd, pynacl, python-dateutil
-smmap==3.0.4              # via gitdb
-toml==0.10.0              # via jubeo
-urllib3==1.25.9           # via requests, requests-unixsocket
-voluptuous==0.11.7        # via lxdock
-ws4py==0.5.1              # via pylxd
+bcrypt==3.1.7
+    # via paramiko
+certifi==2020.4.5.1
+    # via requests
+cffi==1.14.0
+    # via
+    #   bcrypt
+    #   cryptography
+    #   pynacl
+chardet==3.0.4
+    # via requests
+click==7.1.2
+    # via
+    #   jubeo
+    #   pip-tools
+colorlog==2.10.0
+    # via lxdock
+cryptography==2.9.2
+    # via
+    #   paramiko
+    #   pylxd
+fabric==2.5.0
+    # via -r requirements.in
+gitdb==4.0.5
+    # via gitpython
+gitpython==3.1.2
+    # via jubeo
+hyperlink==19.0.0
+    # via jubeo
+idna==2.9
+    # via
+    #   hyperlink
+    #   requests
+invoke==1.4.1
+    # via
+    #   -r requirements.in
+    #   fabric
+joblib==0.14.1
+    # via -r requirements.in
+jubeo==0.0.3a0.dev0
+    # via -r requirements.in
+lxdock==0.4.1
+    # via -r requirements.in
+paramiko==2.10.1
+    # via fabric
+pbr==5.4.5
+    # via pylxd
+pip-tools==5.1.2
+    # via -r requirements.in
+pycparser==2.20
+    # via cffi
+pylxd==2.2.10
+    # via lxdock
+pynacl==1.3.0
+    # via paramiko
+python-dateutil==2.8.1
+    # via pylxd
+python-dotenv==0.13.0
+    # via lxdock
+pyyaml==3.13
+    # via lxdock
+requests==2.23.0
+    # via
+    #   pylxd
+    #   requests-toolbelt
+    #   requests-unixsocket
+requests-toolbelt==0.9.1
+    # via pylxd
+requests-unixsocket==0.2.0
+    # via pylxd
+six==1.14.0
+    # via
+    #   bcrypt
+    #   cryptography
+    #   paramiko
+    #   pip-tools
+    #   pylxd
+    #   pynacl
+    #   python-dateutil
+smmap==3.0.4
+    # via gitdb
+toml==0.10.0
+    # via jubeo
+urllib3==1.25.9
+    # via
+    #   requests
+    #   requests-unixsocket
+voluptuous==0.11.7
+    # via lxdock
+ws4py==0.5.1
+    # via pylxd
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
